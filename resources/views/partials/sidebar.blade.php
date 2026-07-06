@@ -16,6 +16,14 @@
         <i class='bx bx-building-house'></i> Branch
     </a>
 
+    <a href="{{ route('area.index') }}">
+        <i class='bx bx-building-house'></i> Area
+    </a>
+
+    <a href="{{ route('center.index') }}">
+        <i class='bx bx-building-house'></i> Center
+    </a>
+
     <a href="#">
         <i class='bx bx-user'></i> Members
     </a>

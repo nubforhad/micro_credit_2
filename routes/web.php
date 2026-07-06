@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\BranchController; 
+use App\Http\Controllers\AreaController; 
+use App\Http\Controllers\CenterController; 
 
 Route::get('/', function () {
     return view('welcome');
@@ -26,6 +28,10 @@ Route::middleware('auth')->group(function () {
     Route::resource('company', CompanyController::class);
     // branch route 
     Route::resource('branch', BranchController::class);
+    // area route
+    Route::resource('area', AreaController::class);
+    // center route
+    Route::resource('center', CenterController::class);
 });
 
 require __DIR__.'/auth.php';
