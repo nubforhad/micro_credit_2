@@ -28,14 +28,25 @@
         <i class='bx bx-user'></i> Members
     </a>
 
-    <a href="#">
+    <a href="{{ route('saving.index') }}">
         <i class='bx bx-wallet'></i> Savings
     </a>
 
-    <a href="#">
-        <i class='bx bx-credit-card'></i> Loan
+    <a href="{{ route('loan.index') }}">
+       <i class='bx bx-credit-card'></i> Loan
     </a>
+ 
 
+    <a href="{{ route('loan-product.index') }}">
+       <i class='bx bx-credit-card'></i> Loan Product
+    </a>
+ 
+
+    <a href="{{ route('installment.index') }}">
+       <i class='bx bx-credit-card'></i> Loan Installment
+    </a>
+ 
+ 
     <a href="#">
         <i class='bx bx-receipt'></i> Collection
     </a>

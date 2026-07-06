@@ -8,6 +8,10 @@ use App\Http\Controllers\BranchController;
 use App\Http\Controllers\AreaController; 
 use App\Http\Controllers\CenterController; 
 use App\Http\Controllers\MemberController; 
+use App\Http\Controllers\SavingController; 
+use App\Http\Controllers\LoanController; 
+use App\Http\Controllers\LoanProductController; 
+use App\Http\Controllers\LoanInstallmentController; 
 
 Route::get('/', function () {
     return view('welcome');
@@ -35,6 +39,24 @@ Route::middleware('auth')->group(function () {
     Route::resource('center', CenterController::class);
     // member route
     Route::resource('member', MemberController::class);
+    // savings route
+    Route::resource('saving', SavingController::class);
+    Route::resource('loan', LoanController::class);
+    // loan approve route
+    Route::put('/loan/{id}/approve', [LoanController::class,'approve']) ->name('loan.approve');
+    // loan product 
+    Route::resource('loan-product', LoanProductController::class);
+    // loan installment 
+    Route::get('/installment', [LoanInstallmentController::class, 'index'])
+    ->name('installment.index');
+    Route::post('/installment/pay/{id}', [LoanInstallmentController::class, 'pay'])
+    ->name('installment.pay');
+    Route::get('/installment/search', [LoanInstallmentController::class, 'searchPage'])
+    ->name('installment.search');
+
+Route::get('/installment/search/result', [LoanInstallmentController::class, 'searchResult'])
+    ->name('installment.search.result');
+
 });
 
 require __DIR__.'/auth.php';
