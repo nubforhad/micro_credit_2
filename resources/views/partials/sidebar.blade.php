@@ -12,7 +12,7 @@
         <i class='bx bx-buildings'></i> Company
     </a>
 
-    <a href="#">
+    <a href="{{ route('branch.index') }}">
         <i class='bx bx-building-house'></i> Branch
     </a>
 

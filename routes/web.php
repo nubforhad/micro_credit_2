@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\BranchController; 
 
 Route::get('/', function () {
     return view('welcome');
@@ -23,6 +24,8 @@ Route::middleware('auth')->group(function () {
 
     // company 
     Route::resource('company', CompanyController::class);
+    // branch route 
+    Route::resource('branch', BranchController::class);
 });
 
 require __DIR__.'/auth.php';
