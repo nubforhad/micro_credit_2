@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\CompanyController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -19,6 +20,9 @@ Route::middleware('auth')->group(function () {
 
      Route::get('/dashboard', [DashboardController::class,'index'])
         ->name('dashboard');
+
+    // company 
+    Route::resource('company', CompanyController::class);
 });
 
 require __DIR__.'/auth.php';

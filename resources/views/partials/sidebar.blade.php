@@ -8,7 +8,7 @@
         <i class='bx bxs-dashboard'></i> Dashboard
     </a>
 
-    <a href="#">
+    <a href="{{ route('company.index') }}">
         <i class='bx bx-buildings'></i> Company
     </a>
 
