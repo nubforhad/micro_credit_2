@@ -7,6 +7,7 @@ use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\BranchController; 
 use App\Http\Controllers\AreaController; 
 use App\Http\Controllers\CenterController; 
+use App\Http\Controllers\MemberController; 
 
 Route::get('/', function () {
     return view('welcome');
@@ -32,6 +33,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('area', AreaController::class);
     // center route
     Route::resource('center', CenterController::class);
+    // member route
+    Route::resource('member', MemberController::class);
 });
 
 require __DIR__.'/auth.php';

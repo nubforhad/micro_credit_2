@@ -24,7 +24,7 @@
         <i class='bx bx-building-house'></i> Center
     </a>
 
-    <a href="#">
+    <a href="{{ route('member.index') }}">
         <i class='bx bx-user'></i> Members
     </a>
 
