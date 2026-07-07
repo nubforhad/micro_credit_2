@@ -191,4 +191,25 @@ class LoanController extends Controller
             'Loan Approved & Installments Generated Successfully.'
         );
     }
+
+    public function close($id)
+    {
+        $loan = Loan::with('installments')->findOrFail($id);
+
+        // Check unpaid installments
+        $hasDue = $loan->installments()
+            ->where('status', '!=', 'paid')
+            ->exists();
+
+        if ($hasDue) {
+            return back()->with('error', 'Cannot close loan. Installments still pending.');
+        }
+
+        $loan->status = 'closed';
+        $loan->save();
+
+        return back()->with('success', 'Loan closed successfully');
+    }
+
+
 }

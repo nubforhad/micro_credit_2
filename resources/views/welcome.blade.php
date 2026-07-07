@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>আস্থা মাইক্রোফাইন্যান্স — বিশ্বস্ত আর্থিক সহায়তা</title>
+        <title>আস্থা মাইক্রোফাইন্যান্স </title>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">

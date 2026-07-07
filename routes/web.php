@@ -47,15 +47,14 @@ Route::middleware('auth')->group(function () {
     // loan product 
     Route::resource('loan-product', LoanProductController::class);
     // loan installment 
-    Route::get('/installment', [LoanInstallmentController::class, 'index'])
-    ->name('installment.index');
-    Route::post('/installment/pay/{id}', [LoanInstallmentController::class, 'pay'])
-    ->name('installment.pay');
-    Route::get('/installment/search', [LoanInstallmentController::class, 'searchPage'])
-    ->name('installment.search');
+    Route::get('/installment', [LoanInstallmentController::class, 'index'])->name('installment.index');
+    Route::post('/installment/pay/{id}', [LoanInstallmentController::class, 'pay'])->name('installment.pay');
+    Route::get('/installment/search', [LoanInstallmentController::class, 'searchPage'])->name('installment.search');
 
-Route::get('/installment/search/result', [LoanInstallmentController::class, 'searchResult'])
-    ->name('installment.search.result');
+    Route::get('/installment/search/result', [LoanInstallmentController::class, 'searchResult'])->name('installment.search.result');
+    // overdue route 
+    Route::get('/overdue', [LoanInstallmentController::class, 'overdue'])->name('installment.overdue');
+    Route::put('/loan/close/{id}', [LoanController::class, 'close'])->name('loan.close');
 
 });
 

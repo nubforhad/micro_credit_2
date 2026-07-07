@@ -122,23 +122,36 @@ Swal.fire({
 
                         @if($item->status != 'paid')
 
-                        <form action="{{ route('installment.pay', $item->id) }}"
-                              method="POST"
-                              class="d-flex gap-2">
+                         <form action="{{ route('installment.pay', $item->id) }}"
+      method="POST"
+      class="d-flex align-items-center gap-2">
 
-                            @csrf
+    @csrf
 
-                            <input type="number"
-                                   name="paid_amount"
-                                   class="form-control form-control-sm"
-                                   placeholder="Pay Amount"
-                                   required>
+    <input type="number"
+           step="0.01"
+           min="0.01"
+           name="paid_amount"
+           class="form-control form-control-sm"
+           placeholder="Pay Amount"
+           required>
 
-                            <button class="btn btn-success btn-sm">
-                                Pay
-                            </button>
+    <select name="payment_method"
+            class="form-select form-select-sm">
 
-                        </form>
+        <option value="Cash">Cash</option>
+        <option value="Bank">Bank</option>
+        <option value="bKash">bKash</option>
+        <option value="Nagad">Nagad</option>
+        <option value="Rocket">Rocket</option>
+
+    </select>
+
+    <button class="btn btn-success btn-sm">
+        <i class="bx bx-credit-card"></i> Pay
+    </button>
+
+</form>
 
                         @else
                             <span class="text-success fw-bold">Completed</span>

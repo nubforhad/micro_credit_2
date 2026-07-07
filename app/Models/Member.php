@@ -28,4 +28,11 @@ class Member extends Model
     {
         return $this->belongsTo(Center::class);
     }
+
+    public function loanPayments()
+{
+    return $this->hasMany(LoanPayment::class);
+}
+
+
 }

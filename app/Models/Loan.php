@@ -41,4 +41,11 @@ class Loan extends Model
     {
         return $this->hasMany(LoanInstallment::class);
     }
+    public function payments()
+{
+    return $this->hasMany(LoanPayment::class);
+}
+
+
+
 }

@@ -47,6 +47,10 @@
     </a>
  
  
+    <a href="{{ route('installment.overdue') }}">
+        <i class='bx bx-receipt'></i> Loan Overdue 
+    </a>
+ 
     <a href="#">
         <i class='bx bx-receipt'></i> Collection
     </a>

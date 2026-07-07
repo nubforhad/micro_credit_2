@@ -122,6 +122,8 @@
 
                             </form>
 
+
+                            
                         @elseif($loan->status == 'running')
 
                             <span class="badge bg-primary p-2">Running</span>
@@ -137,6 +139,18 @@
                             </span>
 
                         @endif
+
+
+                        @if($loan->status == 'running')
+                            <form action="{{ route('loan.close', $loan->id) }}" method="POST" class="mt-2">
+                                @csrf
+                                @method('PUT')
+
+                                <button class="btn btn-dark btn-sm">
+                                    Close Loan
+                                </button>
+                            </form>
+                            @endif
 
                     </td>
 

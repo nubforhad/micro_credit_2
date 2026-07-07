@@ -13,6 +13,20 @@
 <div class="card shadow-sm">
     <div class="card-body">
 
+        {{-- <h5 class="mt-3">Settlement Summary</h5>
+
+            @php
+                $totalPaid = $loan->installments->sum('paid_amount');
+                $totalDue = $loan->installments->sum('amount');
+                $remaining = $totalDue - $totalPaid;
+            @endphp
+
+            <ul>
+                <li>Total Payable: {{ $totalDue }}</li>
+                <li>Total Paid: {{ $totalPaid }}</li>
+                <li>Remaining: {{ $remaining }}</li>
+            </ul> --}}
+
         {{-- BASIC INFO --}}
         <div class="row">
 
