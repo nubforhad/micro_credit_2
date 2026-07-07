@@ -40,6 +40,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('center', CenterController::class);
     // member route
     Route::resource('member', MemberController::class);
+        Route::get('member/{id}/ledger', [MemberController::class,'ledger'])->name('member.ledger');
     // savings route
     Route::resource('saving', SavingController::class);
     Route::resource('loan', LoanController::class);
@@ -64,6 +65,7 @@ Route::middleware('auth')->group(function () {
     //     Route::get('/so', function () {
     //     return view('modules.payment.index');
     // });
+
 
 });
 

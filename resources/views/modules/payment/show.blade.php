@@ -127,7 +127,7 @@
 
                                         <th>Phone</th>
 
-                                        <td>{{ $payment->member->mobile ?? '-' }}</td>
+                                        <td>{{ $payment->member->phone ?? '-' }}</td>
 
                                     </tr>
 

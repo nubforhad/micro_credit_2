@@ -48,6 +48,8 @@
                     <td>
                         <a href="{{ route('member.show', $member->id) }}" class="btn btn-sm btn-info">View</a>
                         <a href="{{ route('member.edit', $member->id) }}" class="btn btn-sm btn-warning">Edit</a>
+                        <a href="{{ route('member.ledger',$member->id) }}" class="btn btn-sm btn-primary">
+                        <i class="bx bx-book"></i> Ledger </a>
 
                         <form action="{{ route('member.destroy', $member->id) }}" method="POST" class="deleteForm d-inline">
                             @csrf

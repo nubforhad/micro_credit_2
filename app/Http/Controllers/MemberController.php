@@ -92,4 +92,25 @@ class MemberController extends Controller
         return redirect()->route('member.index')
             ->with('success', 'Member deleted successfully');
     }
+
+    public function ledger($id)
+    {
+
+        $member = Member::with([
+            'loans.installments',
+            'loans.payments',
+            'loans.payments.member',
+        'loans.payments.receiver',
+            'savings'
+        ])->findOrFail($id);
+
+
+        return view(
+            'modules.member.ledger',
+            compact('member')
+        );
+
+    }
+
+
 }
