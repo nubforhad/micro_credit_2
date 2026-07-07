@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\LoanPayment;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
+
 
 class LoanPaymentController extends Controller
 {
@@ -59,16 +61,41 @@ class LoanPaymentController extends Controller
     }
 
     public function print($id)
-{
-    $payment = LoanPayment::with([
-        'loan',
-        'member',
-        'installment',
-        'receiver'
-    ])->findOrFail($id);
+    {
+        $payment = LoanPayment::with([
+            'loan',
+            'member',
+            'installment',
+            'receiver'
+        ])->findOrFail($id);
 
-    return view('modules.payment.print', compact('payment'));
-}
+        return view('modules.payment.print', compact('payment'));
+    }
+
+    public function dailyCollection(Request $request)
+    {
+        $date = $request->date ?? Carbon::today()->format('Y-m-d');
+
+        $payments = LoanPayment::with([
+            'loan',
+            'member',
+            'receiver'
+        ])
+        ->whereDate('payment_date', $date)
+        ->latest()
+        ->get();
+
+        $totalCollection = $payments->sum('amount');
+
+        return view(
+            'modules.report.daily_collection',
+            compact(
+                'payments',
+                'date',
+                'totalCollection'
+            )
+        );
+    }
 
 
 }

@@ -50,9 +50,11 @@
        <i class='bx bx-wallet'></i> Payment History
     </a>
 
- 
- 
- 
+    <a href="{{ route('report.daily.collection') }}">
+       <i class='bx bx-line-chart'></i> Daily Collection
+    </a>
+
+  
     <a href="{{ route('installment.overdue') }}">
         <i class='bx bx-receipt'></i> Loan Overdue 
     </a>

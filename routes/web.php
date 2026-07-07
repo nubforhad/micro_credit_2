@@ -62,6 +62,11 @@ Route::middleware('auth')->group(function () {
     Route::get('payment-history', [LoanPaymentController::class, 'index'])->name('loan.payment.index');
     Route::get('payment-history/{id}', [LoanPaymentController::class, 'show'])->name('loan.payment.show');
     Route::get('payment-history/{id}/print', [LoanPaymentController::class, 'print'])->name('loan.payment.print');
+    // daily report 
+    Route::get('reports/daily-collection', [LoanPaymentController::class, 'dailyCollection'])->name('report.daily.collection');
+
+
+    
     //     Route::get('/so', function () {
     //     return view('modules.payment.index');
     // });
