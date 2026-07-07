@@ -38,6 +38,10 @@ class Member extends Model
         return $this->hasMany(Loan::class);
     }
 
+    public function savvings()
+    {
+        return $this->hasMany( Savvings::class);
+    }
 
     public function savings()
     {

@@ -59,6 +59,15 @@
         <i class='bx bx-receipt'></i> Loan Overdue 
     </a>
  
+    <a href="{{ route('savvings.index') }}">
+        <i class='bx bx-receipt'></i> Savvings
+    </a>
+ 
+    <a href="{{ route('savvings.withdraw.request') }}">
+        <i class='bx bx-money'></i> Withdraw Request
+    </a>
+   
+ 
     <a href="#">
         <i class='bx bx-receipt'></i> Collection
     </a>

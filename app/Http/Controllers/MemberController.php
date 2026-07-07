@@ -112,5 +112,40 @@ class MemberController extends Controller
 
     }
 
+    public function show($id)
+{
+
+    $member = Member::with('savvings')
+        ->findOrFail($id);
+
+
+
+    $totalDeposit = $member->savvings()
+        ->where('type','deposit')
+        ->sum('amount');
+
+
+
+    $totalWithdraw = $member->savvings()
+        ->where('type','withdraw')
+        ->sum('amount');
+
+
+
+    $balance = $totalDeposit - $totalWithdraw;
+
+
+
+    return view(
+        'modules.member.show',
+        compact(
+            'member',
+            'totalDeposit',
+            'totalWithdraw',
+            'balance'
+        )
+    );
+
+}
 
 }

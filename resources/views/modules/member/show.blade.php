@@ -29,4 +29,104 @@
     </div>
 </div>
 
+
+<div class="row mt-3">
+
+
+<div class="col-md-4">
+
+<div class="card shadow-sm border-success">
+
+<div class="card-body">
+
+
+<h6>
+Total Deposit
+</h6>
+
+
+<h4 class="text-success">
+
+৳ {{ number_format($totalDeposit,2) }}
+
+</h4>
+
+
+</div>
+
+</div>
+
+</div>
+
+
+
+
+
+<div class="col-md-4">
+
+
+<div class="card shadow-sm border-danger">
+
+
+<div class="card-body">
+
+
+<h6>
+Total Withdraw
+</h6>
+
+
+<h4 class="text-danger">
+
+৳ {{ number_format($totalWithdraw,2) }}
+
+</h4>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+<div class="col-md-4">
+
+
+<div class="card shadow-sm border-primary">
+
+
+<div class="card-body">
+
+
+<h6>
+Current Savvings Balance
+</h6>
+
+
+<h4 class="text-primary">
+
+৳ {{ number_format($balance,2) }}
+
+</h4>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
 @endsection

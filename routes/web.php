@@ -13,6 +13,7 @@ use App\Http\Controllers\LoanController;
 use App\Http\Controllers\LoanProductController; 
 use App\Http\Controllers\LoanInstallmentController; 
 use App\Http\Controllers\LoanPaymentController; 
+    use App\Http\Controllers\SavvingsController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -65,6 +66,20 @@ Route::middleware('auth')->group(function () {
     // daily report 
     Route::get('reports/daily-collection', [LoanPaymentController::class, 'dailyCollection'])->name('report.daily.collection');
 
+    // savvings route ( name ta change)
+    Route::resource('savvings', SavvingsController::class);
+    Route::get('savvings/{id}/receipt', [SavvingsController::class,'receipt'])->name('savvings.receipt');
+    Route::get( 'savvings/ledger/{member_id}', [SavvingsController::class,'ledger'])->name('savvings.ledger');
+    Route::post('savvings/withdraw', [SavvingsController::class,'withdraw'])->name('savvings.withdraw');
+    Route::get( 'savvings/withdraw-request1', [SavvingsController::class,'withdrawRequest'])->name('savvings.withdraw.request');
+
+
+
+Route::put(
+    'savvings/withdraw-approve/{id}',
+    [SavvingsController::class,'withdrawApprove']
+)
+->name('savvings.withdraw.approve');
 
     
     //     Route::get('/so', function () {

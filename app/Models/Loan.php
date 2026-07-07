@@ -18,33 +18,27 @@ class Loan extends Model
         'created_by',
     ];
 
-    /**
-     * Loan belongs to a Member
-     */
+    
     public function member()
     {
         return $this->belongsTo(Member::class);
     }
 
-    /**
-     * Loan belongs to a Loan Product
-     */
+    
     public function loanProduct()
     {
         return $this->belongsTo(LoanProduct::class);
     }
 
-    /**
-     * Loan has many Installments
-     */
+    
     public function installments()
     {
         return $this->hasMany(LoanInstallment::class);
     }
     public function payments()
-{
-    return $this->hasMany(LoanPayment::class);
-}
+    {
+        return $this->hasMany(LoanPayment::class);
+    }
 
 
 
