@@ -12,6 +12,7 @@ use App\Http\Controllers\SavingController;
 use App\Http\Controllers\LoanController; 
 use App\Http\Controllers\LoanProductController; 
 use App\Http\Controllers\LoanInstallmentController; 
+use App\Http\Controllers\LoanPaymentController; 
 
 Route::get('/', function () {
     return view('welcome');
@@ -55,6 +56,14 @@ Route::middleware('auth')->group(function () {
     // overdue route 
     Route::get('/overdue', [LoanInstallmentController::class, 'overdue'])->name('installment.overdue');
     Route::put('/loan/close/{id}', [LoanController::class, 'close'])->name('loan.close');
+
+    // loan payment history route
+    Route::get('payment-history', [LoanPaymentController::class, 'index'])->name('loan.payment.index');
+    Route::get('payment-history/{id}', [LoanPaymentController::class, 'show'])->name('loan.payment.show');
+    Route::get('payment-history/{id}/print', [LoanPaymentController::class, 'print'])->name('loan.payment.print');
+    //     Route::get('/so', function () {
+    //     return view('modules.payment.index');
+    // });
 
 });
 

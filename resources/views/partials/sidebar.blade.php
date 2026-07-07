@@ -45,6 +45,12 @@
     <a href="{{ route('installment.index') }}">
        <i class='bx bx-credit-card'></i> Loan Installment
     </a>
+
+    <a href="{{ route('loan.payment.index') }}">
+       <i class='bx bx-wallet'></i> Payment History
+    </a>
+
+ 
  
  
     <a href="{{ route('installment.overdue') }}">
