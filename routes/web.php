@@ -13,7 +13,11 @@ use App\Http\Controllers\LoanController;
 use App\Http\Controllers\LoanProductController; 
 use App\Http\Controllers\LoanInstallmentController; 
 use App\Http\Controllers\LoanPaymentController; 
-    use App\Http\Controllers\SavvingsController;
+use App\Http\Controllers\SavvingsController;
+use App\Http\Controllers\DpsPlanController;
+use App\Http\Controllers\DpsAccountController;
+use App\Http\Controllers\DpsPaymentController;
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -41,7 +45,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('center', CenterController::class);
     // member route 
     Route::resource('member', MemberController::class);
-        Route::get('member/{id}/ledger', [MemberController::class,'ledger'])->name('member.ledger');
+    Route::get('member/{id}/ledger', [MemberController::class,'ledger'])->name('member.ledger');
     // savings route 
     Route::resource('saving', SavingController::class);
     Route::resource('loan', LoanController::class);
@@ -87,6 +91,14 @@ Route::get(  'savvings/member-ledger/{member_id}',
     //     return view('modules.payment.index');
     // });
     Route::get('savingrequests', [SavvingsController::class,'withreq'])->name('savvings.withdraw.withreqs');
+
+
+    // DPS Route
+Route::resource( 'dps-plans', DpsPlanController::class);
+Route::resource( 'dps-accounts', DpsAccountController::class);
+Route::resource( 'dps-payments',  DpsPaymentController::class);
+
+
 
 });
 

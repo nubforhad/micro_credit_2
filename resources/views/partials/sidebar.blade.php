@@ -341,6 +341,20 @@
     </a>
  
 
+<p>---------------------------------</p>
+
+    <a href="{{ route('dps-accounts.index') }}">
+        <i class='bx bx-money-withdraw'></i>
+        DPS Accounts
+    </a>
+ 
+
+    <a href="{{route('dps-payments.index')}}">
+        <i class='bx bx-money-withdraw'></i>
+        DPS Collection
+    </a>
+  
+
 
 </div>
 
