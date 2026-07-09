@@ -316,7 +316,18 @@
         <i class='bx bx-wallet-alt'></i>
         Savvings
     </a>
-
+<a href="{{ route('savvings.summary') }}">
+    <i class="bx bx-bar-chart"></i>
+    Savvings Summary
+</a>
+<a href="{{ route('savvings.member.summary') }}">
+    <i class="bx bx-bar-chart"></i>
+   Member Savvings Summary
+</a>
+{{-- <a href="{{ route('savvings.summary') }}">
+    <i class="bx bx-bar-chart"></i>
+    Savvings Summary
+</a> --}}
 
 
     <!-- <a href="{{ route('savvings.withdraw.request') }}">

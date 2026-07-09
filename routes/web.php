@@ -73,13 +73,20 @@ Route::middleware('auth')->group(function () {
     Route::post('savvings/withdraw', [SavvingsController::class,'withdraw'])->name('savvings.withdraw');
     Route::get( 'savvings/withdraw-request', [SavvingsController::class,'withdrawRequest'])->name('savvings.withdraw.request');
     Route::put( 'savvings/withdraw-approve/{id}', [SavvingsController::class,'withdrawApprove'])->name('savvings.withdraw.approve');
+ 
+Route::put('savvings/withdraw-reject/{id}', [SavvingsController::class,'withdrawReject'])->name('savvings.withdraw.reject');
+Route::get( 'summary',[SavvingsController::class, 'summary1'])->name('savvings.summary');
+    Route::get('member-summary', [SavvingsController::class, 'memberSummary1'])->name('savvings.member.summary');
+Route::get(  'savvings/member-ledger/{member_id}',
+    [SavvingsController::class,'memberLedger']
+)->name('savvings.member.ledger');
 
 
-    
+
     //     Route::get('/so', function () {
     //     return view('modules.payment.index');
     // });
- Route::get('savingrequests', [SavvingsController::class,'withreq'])->name('savvings.withdraw.withreqs');
+    Route::get('savingrequests', [SavvingsController::class,'withreq'])->name('savvings.withdraw.withreqs');
 
 });
 
