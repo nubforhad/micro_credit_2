@@ -1,0 +1,58 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up()
+{
+    Schema::create('dps_payments', function (Blueprint $table) {
+
+        $table->id();
+
+
+        $table->foreignId('dps_account_id')
+              ->constrained()
+              ->cascadeOnDelete();
+
+
+        $table->foreignId('member_id')
+              ->constrained()
+              ->cascadeOnDelete();
+
+
+        $table->integer('installment_no');
+
+
+        $table->decimal('amount',10,2);
+
+
+        $table->string('payment_method')
+              ->default('Cash');
+
+
+        $table->date('payment_date');
+
+
+        $table->text('note')
+              ->nullable();
+
+
+        $table->timestamps();
+
+    });
+}
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('dps_payments');
+    }
+};
