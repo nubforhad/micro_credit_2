@@ -48,5 +48,15 @@ class Member extends Model
         return $this->hasMany(Saving::class);
     }
 
+    public function collections()
+    {
+        return $this->hasMany(Collection::class);
+    }
+
+    public function collectionDetails()
+    {
+        return $this->hasMany(CollectionDetail::class);
+    }
+
 
 }

@@ -38,4 +38,16 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function collections()
+    {
+        return $this->hasMany(Collection::class, 'collector_id');
+    }
+
+    public function collectionSheets()
+    {
+        return $this->hasMany(CollectionSheet::class);
+    }
+
+    
 }

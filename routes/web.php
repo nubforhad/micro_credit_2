@@ -71,15 +71,9 @@ Route::middleware('auth')->group(function () {
     Route::get('savvings/{id}/receipt', [SavvingsController::class,'receipt'])->name('savvings.receipt');
     Route::get( 'savvings/ledger/{member_id}', [SavvingsController::class,'ledger'])->name('savvings.ledger');
     Route::post('savvings/withdraw', [SavvingsController::class,'withdraw'])->name('savvings.withdraw');
-    Route::get( 'savvings/withdraw-request1', [SavvingsController::class,'withdrawRequest'])->name('savvings.withdraw.request');
+    Route::get( 'savvings/withdraw-request', [SavvingsController::class,'withdrawRequest'])->name('savvings.withdraw.request');
+    Route::put( 'savvings/withdraw-approve/{id}', [SavvingsController::class,'withdrawApprove'])->name('savvings.withdraw.approve');
 
-
-
-Route::put(
-    'savvings/withdraw-approve/{id}',
-    [SavvingsController::class,'withdrawApprove']
-)
-->name('savvings.withdraw.approve');
 
     
     //     Route::get('/so', function () {

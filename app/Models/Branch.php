@@ -20,4 +20,14 @@ class Branch extends Model
     {
         return $this->belongsTo(Company::class);
     }
+
+    public function collections()
+    {
+        return $this->hasMany(Collection::class);
+    }
+
+    public function collectionSheets()
+    {
+        return $this->hasMany(CollectionSheet::class);
+    }
 }
