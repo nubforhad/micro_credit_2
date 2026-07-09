@@ -71,17 +71,10 @@ Route::middleware('auth')->group(function () {
     Route::get('savvings/{id}/receipt', [SavvingsController::class,'receipt'])->name('savvings.receipt');
     Route::get( 'savvings/ledger/{member_id}', [SavvingsController::class,'ledger'])->name('savvings.ledger');
     Route::post('savvings/withdraw', [SavvingsController::class,'withdraw'])->name('savvings.withdraw');
-<<<<<<< HEAD
     Route::get( 'savvings/withdraw-request', [SavvingsController::class,'withdrawRequest'])->name('savvings.withdraw.request');
     Route::put( 'savvings/withdraw-approve/{id}', [SavvingsController::class,'withdrawApprove'])->name('savvings.withdraw.approve');
 
 
-=======
-    Route::get( 'savvings/withdraw-requests', [SavvingsController::class,'withdrawRequest'])->name('savvings.withdraw.request');
-   
-    Route::put( 'savvings/withdraw-approve/{id}', [SavvingsController::class,'withdrawApprove'])->name('savvings.withdraw.approve');
-
->>>>>>> 17af94b21b9f6249d107fc6d64336bba58a7bd41
     
     //     Route::get('/so', function () {
     //     return view('modules.payment.index');
@@ -92,5 +85,3 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__.'/auth.php';
 
-
- 
