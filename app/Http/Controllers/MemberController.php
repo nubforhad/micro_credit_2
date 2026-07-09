@@ -50,6 +50,7 @@ class MemberController extends Controller
             ->with('success', 'Member created successfully');
     }
 
+<<<<<<< HEAD
  public function show($id)
 {
     $member = Member::with([
@@ -78,6 +79,13 @@ class MemberController extends Controller
         )
     );
 }
+=======
+    // public function show($id)
+    // {
+    //     $member = Member::with('center')->findOrFail($id);
+    //     return view('modules.member.show', compact('member'));
+    // }
+>>>>>>> 17af94b21b9f6249d107fc6d64336bba58a7bd41
 
     public function edit($id)
     {
@@ -135,6 +143,44 @@ class MemberController extends Controller
 
     }
 
+<<<<<<< HEAD
     
+=======
+    public function show($id)
+    {
+
+        $member = Member::with('savvings')
+            ->findOrFail($id);
+
+
+
+        $totalDeposit = $member->savvings()
+            ->where('type','deposit')
+            ->sum('amount');
+
+
+
+        $totalWithdraw = $member->savvings()
+            ->where('type','withdraw')
+            ->sum('amount');
+
+
+
+        $balance = $totalDeposit - $totalWithdraw;
+
+
+
+        return view(
+            'modules.member.show',
+            compact(
+                'member',
+                'totalDeposit',
+                'totalWithdraw',
+                'balance'
+            )
+        );
+
+    }
+>>>>>>> 17af94b21b9f6249d107fc6d64336bba58a7bd41
 
 }

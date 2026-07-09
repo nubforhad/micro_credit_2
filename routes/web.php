@@ -39,13 +39,13 @@ Route::middleware('auth')->group(function () {
     Route::resource('area', AreaController::class);
     // center route
     Route::resource('center', CenterController::class);
-    // member route
+    // member route 
     Route::resource('member', MemberController::class);
         Route::get('member/{id}/ledger', [MemberController::class,'ledger'])->name('member.ledger');
-    // savings route
+    // savings route 
     Route::resource('saving', SavingController::class);
     Route::resource('loan', LoanController::class);
-    // loan approve route
+    // loan approve route 
     Route::put('/loan/{id}/approve', [LoanController::class,'approve']) ->name('loan.approve');
     // loan product 
     Route::resource('loan-product', LoanProductController::class);
@@ -71,15 +71,22 @@ Route::middleware('auth')->group(function () {
     Route::get('savvings/{id}/receipt', [SavvingsController::class,'receipt'])->name('savvings.receipt');
     Route::get( 'savvings/ledger/{member_id}', [SavvingsController::class,'ledger'])->name('savvings.ledger');
     Route::post('savvings/withdraw', [SavvingsController::class,'withdraw'])->name('savvings.withdraw');
+<<<<<<< HEAD
     Route::get( 'savvings/withdraw-request', [SavvingsController::class,'withdrawRequest'])->name('savvings.withdraw.request');
     Route::put( 'savvings/withdraw-approve/{id}', [SavvingsController::class,'withdrawApprove'])->name('savvings.withdraw.approve');
 
 
+=======
+    Route::get( 'savvings/withdraw-requests', [SavvingsController::class,'withdrawRequest'])->name('savvings.withdraw.request');
+   
+    Route::put( 'savvings/withdraw-approve/{id}', [SavvingsController::class,'withdrawApprove'])->name('savvings.withdraw.approve');
+
+>>>>>>> 17af94b21b9f6249d107fc6d64336bba58a7bd41
     
     //     Route::get('/so', function () {
     //     return view('modules.payment.index');
     // });
-
+ Route::get('savingrequests', [SavvingsController::class,'withreq'])->name('savvings.withdraw.withreqs');
 
 });
 
