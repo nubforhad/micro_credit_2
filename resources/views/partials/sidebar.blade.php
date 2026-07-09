@@ -319,11 +319,16 @@
 
 
 
-    <a href="{{ route('savvings.withdraw.request') }}">
+    <!-- <a href="{{ route('savvings.withdraw.request') }}">
+        <i class='bx bx-money-withdraw'></i>
+        Withdraw
+    </a> -->
+
+    <a href="{{ route('savvings.withdraw.withreqs') }}">
         <i class='bx bx-money-withdraw'></i>
         Withdraw
     </a>
-
+ 
 
 
 </div>

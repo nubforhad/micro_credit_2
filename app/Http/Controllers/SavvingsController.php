@@ -372,74 +372,35 @@ class SavvingsController extends Controller
 
     public function withdraw(Request $request)
 {
-
     $request->validate([
-
         'member_id'=>'required',
-
         'amount'=>'required|numeric|min:1',
-
         'date'=>'required'
-
     ]);
-
-
-
     $balance = $this->getBalance(
         $request->member_id
     );
-
-
-
     if($request->amount > $balance)
     {
-
         return back()
         ->with(
             'error',
             'Insufficient saving balance'
         );
-
     }
-
-
-
-
     Savvings::create([
-
-
         'member_id'=>$request->member_id,
-
-
         'receipt_no'=>$this->generateReceipt(),
-
-
         'type'=>'withdraw',
-
-
         'status'=>'pending',
-
-
         'amount'=>$request->amount,
-
-
         'payment_method'=>$request->payment_method,
-
-
         'date'=>$request->date,
-
-
         'note'=>$request->note,
-
-
         'created_by'=>auth()->id()
 
 
     ]);
-
-
-
-
     return back()
     ->with(
         'success',
@@ -447,6 +408,15 @@ class SavvingsController extends Controller
     );
 
 
+}
+
+public function withreq(){
+     $requests = Savvings::with('member')
+        ->where('type','withdraw')
+        ->where('status','pending')
+        ->latest()
+        ->paginate(15);
+    return view('modules.savvings.withdrawRequest',  compact('requests'));
 }
 
 
@@ -459,7 +429,7 @@ public function withdrawRequest()
         ->latest()
         ->paginate(15);
 
-    return view('modules.savvings.withdraw_request',  compact('requests'));
+    return view('modules.savvings.withdrawRequest',  compact('requests'));
 
 }
 public function withdrawApprove($id)
