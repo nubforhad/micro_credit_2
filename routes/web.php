@@ -39,13 +39,13 @@ Route::middleware('auth')->group(function () {
     Route::resource('area', AreaController::class);
     // center route
     Route::resource('center', CenterController::class);
-    // member route
+    // member route 
     Route::resource('member', MemberController::class);
         Route::get('member/{id}/ledger', [MemberController::class,'ledger'])->name('member.ledger');
-    // savings route
+    // savings route 
     Route::resource('saving', SavingController::class);
     Route::resource('loan', LoanController::class);
-    // loan approve route
+    // loan approve route 
     Route::put('/loan/{id}/approve', [LoanController::class,'approve']) ->name('loan.approve');
     // loan product 
     Route::resource('loan-product', LoanProductController::class);

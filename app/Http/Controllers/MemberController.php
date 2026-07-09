@@ -50,11 +50,11 @@ class MemberController extends Controller
             ->with('success', 'Member created successfully');
     }
 
-    public function show($id)
-    {
-        $member = Member::with('center')->findOrFail($id);
-        return view('modules.member.show', compact('member'));
-    }
+    // public function show($id)
+    // {
+    //     $member = Member::with('center')->findOrFail($id);
+    //     return view('modules.member.show', compact('member'));
+    // }
 
     public function edit($id)
     {
@@ -113,39 +113,39 @@ class MemberController extends Controller
     }
 
     public function show($id)
-{
+    {
 
-    $member = Member::with('savvings')
-        ->findOrFail($id);
-
-
-
-    $totalDeposit = $member->savvings()
-        ->where('type','deposit')
-        ->sum('amount');
+        $member = Member::with('savvings')
+            ->findOrFail($id);
 
 
 
-    $totalWithdraw = $member->savvings()
-        ->where('type','withdraw')
-        ->sum('amount');
+        $totalDeposit = $member->savvings()
+            ->where('type','deposit')
+            ->sum('amount');
 
 
 
-    $balance = $totalDeposit - $totalWithdraw;
+        $totalWithdraw = $member->savvings()
+            ->where('type','withdraw')
+            ->sum('amount');
 
 
 
-    return view(
-        'modules.member.show',
-        compact(
-            'member',
-            'totalDeposit',
-            'totalWithdraw',
-            'balance'
-        )
-    );
+        $balance = $totalDeposit - $totalWithdraw;
 
-}
+
+
+        return view(
+            'modules.member.show',
+            compact(
+                'member',
+                'totalDeposit',
+                'totalWithdraw',
+                'balance'
+            )
+        );
+
+    }
 
 }
