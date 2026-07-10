@@ -1,100 +1,76 @@
-@extends('layouts.app') @section('content') @if(session('success'))
+
+
+@extends('layouts.app') @section('content') @if($errors->any())
 
 <script>
     Swal.fire({
-        icon: "success",
+        icon: "error",
 
-        title: "Success",
+        title: "Validation Error",
 
-        text: "{{session('success')}}",
+        html: `
 
-        timer: 2000,
 
-        showConfirmButton: false,
+    @foreach($errors->all() as $error)
+
+        <div>{{ $error }}</div>
+
+    @endforeach
+
+
+    `,
     });
 </script>
 
 @endif
 
 <div class="d-flex justify-content-between mb-3">
-    <h4>DPS Accounts</h4>
+    <h4>Open DPS Account</h4>
 
-    <a href="{{route('dps-accounts.create')}}" class="btn btn-primary"> Open New DPS </a>
+    <a href="{{route('dps-accounts.index')}}" class="btn btn-secondary"> Back </a>
 </div>
 
 <div class="card shadow-sm">
     <div class="card-body">
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>#</th>
+        <form action="{{route('dps-accounts.store')}}" method="POST">
+            @csrf
 
-                    <th>Account No</th>
+            <div class="mb-3">
+                <label> Member </label>
 
-                    <th>Member</th>
+                <select name="member_id" class="form-control" required>
+                    <option value="">Select Member</option>
 
-                    <th>Plan</th>
+                    @foreach($members as $member)
 
-                    <th>Installment</th>
+                    <option value="{{$member->id}}">{{$member->name}} - {{$member->member_no}}</option>
 
-                    <th>Paid</th>
+                    @endforeach
+                </select>
+            </div>
 
-                    <th>Maturity Date</th>
+            <div class="mb-3">
+                <label> DPS Plan </label>
 
-                    <th>Status</th>
+                <select name="dps_plan_id" class="form-control" required>
+                    <option value="">Select Plan</option>
 
-                    <th>Action</th>
-                </tr>
-            </thead>
+                    @foreach($plans as $plan)
 
-            <tbody>
-                @foreach($accounts as $account)
+                    <option value="{{$plan->id}}">{{$plan->name}} - {{$plan->installment_amount}} Monthly</option>
 
-                <tr>
-                    <td>{{$loop->iteration}}</td>
+                    @endforeach
+                </select>
+            </div>
 
-                    <td>{{$account->account_no}}</td>
+            <div class="mb-3">
+                <label> Start Date </label>
 
-                    <td>{{$account->member->name}}</td>
+                <input type="date" name="start_date" value="{{date('Y-m-d')}}" class="form-control" required />
+            </div>
 
-                    <td>{{$account->plan->name}}</td>
-
-                    <td>{{$account->installment_amount}}</td>
-
-                    <td>{{$account->paid_installment}} / {{$account->total_installment}}</td>
-
-                    <td>{{$account->maturity_date}}</td>
-
-                    <td>
-                        @if($account->status=='running')
-
-                        <span class="badge bg-success"> Running </span>
-
-                        @elseif($account->status=='completed')
-
-                        <span class="badge bg-primary"> Completed </span>
-
-                        @else
-
-                        <span class="badge bg-danger"> Closed </span>
-
-                        @endif
-                    </td>
-
-                    <td>
-                        <form action="{{route('dps-accounts.destroy',$account->id)}}" method="POST">
-                            @csrf @method('DELETE')
-
-                            <button class="btn btn-danger btn-sm" onclick="return confirm('Delete Account?')">
-                                Delete
-                            </button>
-                        </form>
-                    </td>
-                </tr>
-
-                @endforeach
-            </tbody>
-        </table>
+            <button class="btn btn-success">Open DPS Account</button>
+        </form>
     </div>
 </div>
 

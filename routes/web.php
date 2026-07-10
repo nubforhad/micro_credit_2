@@ -17,6 +17,11 @@ use App\Http\Controllers\SavvingsController;
 use App\Http\Controllers\DpsPlanController;
 use App\Http\Controllers\DpsAccountController;
 use App\Http\Controllers\DpsPaymentController;
+use App\Http\Controllers\DpsMaturityController;
+use App\Http\Controllers\DpsReportController;
+use App\Http\Controllers\DpsDueController;
+use App\Http\Controllers\DpsReceiptController;
+
 
 
 Route::get('/', function () {
@@ -78,12 +83,10 @@ Route::middleware('auth')->group(function () {
     Route::get( 'savvings/withdraw-request', [SavvingsController::class,'withdrawRequest'])->name('savvings.withdraw.request');
     Route::put( 'savvings/withdraw-approve/{id}', [SavvingsController::class,'withdrawApprove'])->name('savvings.withdraw.approve');
  
-Route::put('savvings/withdraw-reject/{id}', [SavvingsController::class,'withdrawReject'])->name('savvings.withdraw.reject');
-Route::get( 'summary',[SavvingsController::class, 'summary1'])->name('savvings.summary');
+    Route::put('savvings/withdraw-reject/{id}', [SavvingsController::class,'withdrawReject'])->name('savvings.withdraw.reject');
+    Route::get( 'summary',[SavvingsController::class, 'summary1'])->name('savvings.summary');
     Route::get('member-summary', [SavvingsController::class, 'memberSummary1'])->name('savvings.member.summary');
-Route::get(  'savvings/member-ledger/{member_id}',
-    [SavvingsController::class,'memberLedger']
-)->name('savvings.member.ledger');
+    Route::get(  'savvings/member-ledger/{member_id}', [SavvingsController::class,'memberLedger'])->name('savvings.member.ledger');
 
 
 
@@ -97,10 +100,12 @@ Route::get(  'savvings/member-ledger/{member_id}',
 Route::resource( 'dps-plans', DpsPlanController::class);
 Route::resource( 'dps-accounts', DpsAccountController::class);
 Route::resource( 'dps-payments',  DpsPaymentController::class);
+Route::resource( 'dps-maturities', DpsMaturityController::class);
+Route::get( 'dps-reports',  [DpsReportController::class,'index'])->name('dps-reports.index');
 
 
-
-});
+Route::get('dps-receipt/{id}', [DpsReceiptController::class,'show'])->name('dps-receipt.show');
+Route::get( 'dps-due', [DpsDueController::class,'index'])->name('dps-due.index');});
 
 require __DIR__.'/auth.php';
 

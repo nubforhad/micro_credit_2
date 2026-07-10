@@ -1,74 +1,100 @@
-@extends('layouts.app') @section('content') @if($errors->any())
+@extends('layouts.app') @section('content') @if(session('success'))
 
 <script>
     Swal.fire({
-        icon: "error",
+        icon: "success",
 
-        title: "Validation Error",
+        title: "Success",
 
-        html: `
+        text: "{{session('success')}}",
 
+        timer: 2000,
 
-    @foreach($errors->all() as $error)
-
-        <div>{{ $error }}</div>
-
-    @endforeach
-
-
-    `,
+        showConfirmButton: false,
     });
 </script>
 
 @endif
 
 <div class="d-flex justify-content-between mb-3">
-    <h4>Open DPS Account</h4>
+    <h4>DPS Accounts</h4>
 
-    <a href="{{route('dps-accounts.index')}}" class="btn btn-secondary"> Back </a>
+    <a href="{{route('dps-accounts.create')}}" class="btn btn-primary"> Open New DPS </a>
 </div>
 
 <div class="card shadow-sm">
     <div class="card-body">
-        <form action="{{route('dps-accounts.store')}}" method="POST">
-            @csrf
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>#</th>
 
-            <div class="mb-3">
-                <label> Member </label>
+                    <th>Account No</th>
 
-                <select name="member_id" class="form-control" required>
-                    <option value="">Select Member</option>
+                    <th>Member</th>
 
-                    @foreach($members as $member)
+                    <th>Plan</th>
 
-                    <option value="{{$member->id}}">{{$member->name}} - {{$member->member_no}}</option>
+                    <th>Installment</th>
 
-                    @endforeach
-                </select>
-            </div>
+                    <th>Paid</th>
 
-            <div class="mb-3">
-                <label> DPS Plan </label>
+                    <th>Maturity Date</th>
 
-                <select name="dps_plan_id" class="form-control" required>
-                    <option value="">Select Plan</option>
+                    <th>Status</th>
 
-                    @foreach($plans as $plan)
+                    <th>Action</th>
+                </tr>
+            </thead>
 
-                    <option value="{{$plan->id}}">{{$plan->name}} - {{$plan->installment_amount}} Monthly</option>
+            <tbody>
+                @foreach($accounts as $account)
 
-                    @endforeach
-                </select>
-            </div>
+                <tr>
+                    <td>{{$loop->iteration}}</td>
 
-            <div class="mb-3">
-                <label> Start Date </label>
+                    <td>{{$account->account_no}}</td>
 
-                <input type="date" name="start_date" value="{{date('Y-m-d')}}" class="form-control" required />
-            </div>
+                    <td>{{$account->member->name}}</td>
 
-            <button class="btn btn-success">Open DPS Account</button>
-        </form>
+                    <td>{{$account->plan->name}}</td>
+
+                    <td>{{$account->installment_amount}}</td>
+
+                    <td>{{$account->paid_installment}} / {{$account->total_installment}}</td>
+
+                    <td>{{$account->maturity_date}}</td>
+
+                    <td>
+                        @if($account->status=='running')
+
+                        <span class="badge bg-success"> Running </span>
+
+                        @elseif($account->status=='completed')
+
+                        <span class="badge bg-primary"> Completed </span>
+
+                        @else
+
+                        <span class="badge bg-danger"> Closed </span>
+
+                        @endif
+                    </td>
+
+                    <td>
+                        <form action="{{route('dps-accounts.destroy',$account->id)}}" method="POST">
+                            @csrf @method('DELETE')
+
+                            <button class="btn btn-danger btn-sm" onclick="return confirm('Delete Account?')">
+                                Delete
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+
+                @endforeach
+            </tbody>
+        </table>
     </div>
 </div>
 
