@@ -9,6 +9,8 @@ use App\Models\Member;
 use App\Models\Savvings;
 use App\Models\DpsAccount;
 use App\Models\DpsPayment;
+use App\Models\FundAccount;
+use App\MOdels\FundTransaction;
 use Carbon\Carbon;
 
 
@@ -19,50 +21,24 @@ class DashboardController extends Controller
 
     public function index()
     {
-
-
         // Members
-
         $totalMember = Member::count();
-
-
-
         // Loan
-
         $totalLoan = Loan::count();
-
-
         $runningLoan = Loan::where(
             'status',
             'running'
         )->count();
-
-
-
         $totalLoanAmount = Loan::sum('amount');
-
-
-
-
-
         // Collection
-
         $totalCollection = LoanInstallment::sum(
             'paid_amount'
         );
-
-
-
         $todayCollection = LoanInstallment::whereDate(
             'updated_at',
             Carbon::today()
         )
         ->sum('paid_amount');
-
-
-
-
-
         // Due
 
         $todayDue = LoanInstallment::whereDate(
@@ -71,11 +47,6 @@ class DashboardController extends Controller
         )
         ->where('status','!=','paid')
         ->count();
-
-
-
-
-
         // Overdue
 
         $overdue = LoanInstallment::where(
@@ -85,54 +56,45 @@ class DashboardController extends Controller
         )
         ->where('status','!=','paid')
         ->count();
-
-
-
-
-
-
-
         // Savings
-
-
         $savingAmount = Savvings::where(
             'type',
             'deposit'
         )
         ->sum('amount');
-
-
-
-
-
-
-
         // DPS
-
-
         $totalDps = DpsAccount::count();
-
-
-
         $dpsCollection = DpsPayment::sum(
             'amount'
         );
-
-
-
-
-
-
-
-
         // Recent Loan
-
-
         $recentLoans = Loan::with('member')
         ->latest()
         ->limit(5)
         ->get();
 
+         $totalFund = FundAccount::count();
+        $totalBalance = FundAccount::sum('current_balance');
+        $todayReceive = FundTransaction::whereDate(
+                'transaction_date',
+                Carbon::today()
+            )
+            ->where('dr_cr','credit')
+            ->sum('amount');
+
+
+        $todayPayment = FundTransaction::whereDate(
+                'transaction_date',
+                Carbon::today()
+            )
+            ->where('dr_cr','debit')
+            ->sum('amount');
+
+
+        $transactions = FundTransaction::with('fundAccount')
+            ->latest()
+            ->limit(10)
+            ->get();
 
 
 
@@ -163,7 +125,17 @@ class DashboardController extends Controller
 
                 'dpsCollection',
 
-                'recentLoans'
+                'recentLoans',
+
+                'totalFund',
+
+            'totalBalance',
+
+            'todayReceive',
+
+            'todayPayment',
+
+            'transactions'
 
             )
         );

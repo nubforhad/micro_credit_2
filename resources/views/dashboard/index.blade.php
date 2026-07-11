@@ -150,6 +150,81 @@
     </div>
 </div>
 
+<div class="row g-3 mt-1">
+    <div class="col-xl-3 col-md-6">
+        <div class="card dashboard-card text-white bg-gradient-primary shadow">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <div class="stat-title">Total Fund</div>
+
+                        <div class="stat-number">{{$totalFund}}</div>
+                    </div>
+
+                    <div class="card-icon">
+                        <i class="bx bx-group"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6">
+        <div class="card dashboard-card text-white bg-gradient-success shadow">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <div class="stat-title">Total Blance</div>
+
+                        <div class="stat-number">{{$totalBalance}}</div>
+                    </div>
+
+                    <div class="card-icon">
+                        <i class="bx bx-credit-card"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6">
+        <div class="card dashboard-card text-white bg-gradient-warning shadow">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <div class="stat-title">Today Receive</div>
+
+                        <div class="stat-number">{{number_format($todayReceive,2)}}</div>
+                    </div>
+
+                    <div class="card-icon">
+                        <i class="bx bx-money"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6">
+        <div class="card dashboard-card text-white bg-gradient-danger shadow">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <div class="stat-title">Total  Payment</div>
+
+                        <div class="stat-number">{{$todayPayment}}</div>
+                    </div>
+
+                    <div class="card-icon">
+                        <i class="bx bx-error-circle"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+ 
+</div>
+
 <!-- SECOND ROW -->
 
 <div class="row g-3 mt-1">
@@ -193,9 +268,7 @@
         <div class="card shadow-sm dashboard-card">
             <div class="card-body">
                 <h6 class="text-muted">DPS Collection</h6>
-
                 <h4 class="fw-bold">৳ {{number_format($dpsCollection,2)}}</h4>
-
                 <i class="bx bx-bar-chart fs-2 text-info"></i>
             </div>
         </div>
@@ -215,13 +288,9 @@
                 <thead class="table-light">
                     <tr>
                         <th>#</th>
-
                         <th>Loan No</th>
-
                         <th>Member</th>
-
                         <th>Amount</th>
-
                         <th>Status</th>
                     </tr>
                 </thead>
@@ -250,7 +319,6 @@
                             @endif
                         </td>
                     </tr>
-
                     @empty
 
                     <tr>

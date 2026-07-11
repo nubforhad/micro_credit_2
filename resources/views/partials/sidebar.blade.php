@@ -359,9 +359,9 @@
                 Fund ledger
             </a>
 
-            <a href="{{route('fund-transactions.index')}}">
+            <a href="{{route('fund-accounts.index')}}">
                 <i class="bx bx-user-plus"></i>
-               Fund Transactions
+               Fund Account
             </a>
  
         </div>

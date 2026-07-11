@@ -107,8 +107,8 @@ Route::middleware('auth')->group(function () {
 
 
 
-
-    Route::get('fund-ledger', [FundAccountController::class,'index'])->name('fund.ledger');
+Route::resource('fund-accounts', FundAccountController::class);
+    Route::get('fund-ledger', [FundTransactionController::class,'index'])->name('fund.ledger');
     Route::resource( 'fund-transactions', FundTransactionController::class);
 
 Route::get('dps-receipt/{id}', [DpsReceiptController::class,'show'])->name('dps-receipt.show');
