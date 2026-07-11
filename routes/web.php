@@ -21,6 +21,7 @@ use App\Http\Controllers\DpsMaturityController;
 use App\Http\Controllers\DpsReportController;
 use App\Http\Controllers\DpsDueController;
 use App\Http\Controllers\DpsReceiptController;
+use App\Http\Controllers\FundTransactionController;
 
 
 
@@ -97,12 +98,17 @@ Route::middleware('auth')->group(function () {
 
 
     // DPS Route
-Route::resource( 'dps-plans', DpsPlanController::class);
-Route::resource( 'dps-accounts', DpsAccountController::class);
-Route::resource( 'dps-payments',  DpsPaymentController::class);
-Route::resource( 'dps-maturities', DpsMaturityController::class);
-Route::get( 'dps-reports',  [DpsReportController::class,'index'])->name('dps-reports.index');
+    Route::resource( 'dps-plans', DpsPlanController::class);
+    Route::resource( 'dps-accounts', DpsAccountController::class);
+    Route::resource( 'dps-payments',  DpsPaymentController::class);
+    Route::resource( 'dps-maturities', DpsMaturityController::class);
+    Route::get( 'dps-reports',  [DpsReportController::class,'index'])->name('dps-reports.index');
 
+
+
+
+    Route::get('fund-ledger', [FundTransactionController::class,'index'])->name('fund.ledger');
+    Route::resource( 'fund-transactions', FundTransactionController::class);
 
 Route::get('dps-receipt/{id}', [DpsReceiptController::class,'show'])->name('dps-receipt.show');
 Route::get( 'dps-due', [DpsDueController::class,'index'])->name('dps-due.index');});

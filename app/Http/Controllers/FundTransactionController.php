@@ -14,13 +14,10 @@ class FundTransactionController extends Controller
      */
     public function index(Request $request)
     {
-
         $query = FundTransaction::with([
             'fundAccount',
             'creator'
         ]);
-
-
         // Date Filter
         if($request->from_date && $request->to_date)
         {
@@ -32,8 +29,6 @@ class FundTransactionController extends Controller
                 ]
             );
         }
-
-
         // Type Filter
         if($request->type)
         {
@@ -42,30 +37,12 @@ class FundTransactionController extends Controller
                 $request->type
             );
         }
-
-
         $transactions = $query
             ->latest('transaction_date')
             ->paginate(20);
-
-
-
-        $totalCredit = FundTransaction::where('dr_cr','credit')
-            ->sum('amount');
-
-
-        $totalDebit = FundTransaction::where('dr_cr','debit')
-            ->sum('amount');
-
-
-
-        return view(
-            'fund_transactions.index',
-            compact(
-                'transactions',
-                'totalCredit',
-                'totalDebit'
-            )
+        $totalCredit = FundTransaction::where('dr_cr','credit')->sum('amount');
+        $totalDebit = FundTransaction::where('dr_cr','debit') ->sum('amount');
+        return view( 'fund_transactions.index', compact('transactions', 'totalCredit', 'totalDebit' )
         );
     }
 
