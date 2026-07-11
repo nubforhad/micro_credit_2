@@ -340,6 +340,32 @@
             </a>
         </div>
     </div>
+    <!-- Account -->
+
+    <div class="menu-title">Account Management</div>
+
+    <div class="menu-group">
+        <a class="menu-toggle">
+            <i class="bx bx-calendar"></i>
+
+            Account
+
+            <i class="bx bx-chevron-down arrow"></i>
+        </a>
+
+        <div class="submenu">
+            <a href="{{route('fund.ledger')}}">
+                <i class="bx bx-list-ul"></i>
+                Fund ledger
+            </a>
+
+            <a href="{{route('fund-transactions.index')}}">
+                <i class="bx bx-user-plus"></i>
+               Fund Transactions
+            </a>
+ 
+        </div>
+    </div>
 </div>
 
 <div class="sidebar-overlay" id="sidebarOverlay"></div>

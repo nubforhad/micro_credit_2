@@ -21,6 +21,7 @@ use App\Http\Controllers\DpsMaturityController;
 use App\Http\Controllers\DpsReportController;
 use App\Http\Controllers\DpsDueController;
 use App\Http\Controllers\DpsReceiptController;
+use App\Http\Controllers\FundAccountController;
 use App\Http\Controllers\FundTransactionController;
 
 
@@ -107,7 +108,7 @@ Route::middleware('auth')->group(function () {
 
 
 
-    Route::get('fund-ledger', [FundTransactionController::class,'index'])->name('fund.ledger');
+    Route::get('fund-ledger', [FundAccountController::class,'index'])->name('fund.ledger');
     Route::resource( 'fund-transactions', FundTransactionController::class);
 
 Route::get('dps-receipt/{id}', [DpsReceiptController::class,'show'])->name('dps-receipt.show');
