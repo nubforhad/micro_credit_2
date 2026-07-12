@@ -63,13 +63,13 @@ Route::middleware('auth')->group(function () {
      Route::get('/dashboard', [DashboardController::class,'index'])->name('dashboard');
 
     // company 
-    Route::resource('company', CompanyController::class);
+    Route::resource('company', CompanyController::class)->middleware('permission:company.view');
     // branch route 
-    Route::resource('branch', BranchController::class);
+    Route::resource('branch', BranchController::class)->middleware('permission:branch.view');;
     // area route
-    Route::resource('area', AreaController::class);
+    Route::resource('area', AreaController::class) ->middleware('permission:area.view');;
     // center route
-    Route::resource('center', CenterController::class);
+    Route::resource('center', CenterController::class)->middleware('permission:center.view');;
     // member route 
     Route::resource('member', MemberController::class);
     Route::get('member/{id}/ledger', [MemberController::class,'ledger'])->name('member.ledger');

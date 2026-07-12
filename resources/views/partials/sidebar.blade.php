@@ -88,7 +88,7 @@
     @endcan {{-- Cash Book --}} @can('cashbook.view')
 
     <a href="{{route('cash-book.index')}}">
-        <i class="bx bx-book"></i>
+        <i class="bx bx-spreadsheet"></i>
 
         Cash Book
     </a>
