@@ -1,179 +1,3 @@
-<style>
-    * {
-        box-sizing: border-box;
-    }
-
-    .sidebar {
-        width: 260px;
-
-        height: 100vh;
-
-        position: fixed;
-
-        top: 0;
-
-        left: 0;
-
-        background: #1e293b;
-
-        color: #fff;
-
-        z-index: 1000;
-
-        overflow-y: auto;
-
-        transition: 0.3s ease;
-    }
-
-    .sidebar::-webkit-scrollbar {
-        width: 6px;
-    }
-
-    .sidebar::-webkit-scrollbar-thumb {
-        background: #64748b;
-
-        border-radius: 10px;
-    }
-
-    .sidebar-header {
-        height: 70px;
-
-        display: flex;
-
-        align-items: center;
-
-        justify-content: space-between;
-
-        padding: 15px;
-
-        position: sticky;
-
-        top: 0;
-
-        background: #1e293b;
-
-        z-index: 10;
-    }
-
-    .sidebar-header a {
-        text-decoration: none;
-    }
-
-    .sidebar-header h4 {
-        color: #fff;
-
-        margin: 0;
-    }
-
-    .sidebar a {
-        display: flex;
-
-        align-items: center;
-
-        gap: 12px;
-
-        padding: 12px 20px;
-
-        color: #fff;
-
-        text-decoration: none;
-
-        font-size: 15px;
-    }
-
-    .sidebar a:hover {
-        background: #334155;
-    }
-
-    .sidebar a i {
-        font-size: 20px;
-    }
-
-    /* SECTION */
-
-    .menu-title {
-        padding: 10px 20px;
-
-        color: #94a3b8;
-
-        font-size: 12px;
-
-        text-transform: uppercase;
-    }
-
-    /* SUB MENU */
-
-    .menu-toggle {
-        cursor: pointer;
-    }
-
-    .menu-toggle .arrow {
-        margin-left: auto;
-
-        transition: 0.3s;
-    }
-
-    .menu-toggle.active .arrow {
-        transform: rotate(180deg);
-    }
-
-    .submenu {
-        display: none;
-
-        background: #0f172a;
-    }
-
-    .submenu.show {
-        display: block;
-    }
-
-    .submenu a {
-        padding-left: 50px;
-
-        font-size: 14px;
-    }
-
-    /* OVERLAY */
-
-    .sidebar-overlay {
-        display: none;
-
-        position: fixed;
-
-        top: 0;
-
-        left: 0;
-
-        width: 100%;
-
-        height: 100%;
-
-        background: rgba(0, 0, 0, 0.5);
-
-        z-index: 999;
-    }
-
-    @media (max-width: 991px) {
-        .sidebar {
-            left: -260px;
-        }
-
-        .sidebar.active {
-            left: 0;
-        }
-
-        .sidebar-overlay.active {
-            display: block;
-        }
-    }
-
-    @media (min-width: 992px) {
-        .sidebar {
-            left: 0;
-        }
-    }
-</style>
-
 <div class="sidebar" id="sidebar">
     <div class="sidebar-header">
         <a href="{{route('dashboard')}}">
@@ -186,55 +10,107 @@
         <button class="btn-close btn-close-white d-lg-none" id="closeSidebar"></button>
     </div>
 
+    {{-- Dashboard --}}
+
     <a href="{{route('dashboard')}}">
         <i class="bx bxs-dashboard"></i>
         Dashboard
     </a>
 
+    {{-- Organization --}}
+
     <div class="menu-title">Organization</div>
+
+    @can('user.view')
+
+    <a href="{{route('users.index')}}">
+        <i class="bx bx-user"></i>
+
+        Users
+    </a>
+
+    @endcan @can('role.view')
+
+    <a href="{{route('roles.index')}}">
+        <i class="bx bx-shield"></i>
+
+        Roles
+    </a>
+
+    @endcan @can('company.view')
 
     <a href="{{route('company.index')}}">
         <i class="bx bx-buildings"></i>
+
         Company
     </a>
 
+    @endcan @can('branch.view')
+
     <a href="{{route('branch.index')}}">
         <i class="bx bx-building-house"></i>
+
         Branch
     </a>
 
+    @endcan @can('area.view')
+
     <a href="{{route('area.index')}}">
         <i class="bx bx-map"></i>
+
         Area
     </a>
 
+    @endcan @can('center.view')
+
     <a href="{{route('center.index')}}">
         <i class="bx bx-sitemap"></i>
+
         Center
     </a>
 
+    @endcan @can('member.view')
+
     <a href="{{route('member.index')}}">
         <i class="bx bx-group"></i>
+
         Members
     </a>
 
+    @endcan {{-- Income Expense --}} @can('income.view')
 
     <a href="{{route('income-expenses.index')}}">
         <i class="bx bx-transfer-alt"></i>
+
         Income Expenses
     </a>
 
+    @endcan {{-- Cash Book --}} @can('cashbook.view')
+
     <a href="{{route('cash-book.index')}}">
-        <i class="bx bx-money"></i>
-       Cash Book
+        <i class="bx bx-book"></i>
+
+        Cash Book
     </a>
+
+    @endcan {{-- Daily Collection --}} @can('report.daily')
 
     <a href="{{route('daily-collection.index')}}">
-        <i class="bx bx-money"></i>
-       Daily Collection 
+        <i class="bx bx-collection"></i>
+
+        Daily Collection
     </a>
 
-    <!-- LOAN -->
+    @endcan {{-- Reports --}} @can('report.dashboard')
+
+    <a href="{{route('reports.dashboard')}}">
+        <i class="bx bx-bar-chart"></i>
+
+        Reports Dashboard
+    </a>
+
+    @endcan {{-- LOAN MANAGEMENT --}} @canany([ 'loan.view', 'loan.create', 'loan.collection', 'loan.payment.history',
+    'loan.overdue', 'loan.report' ])
 
     <div class="menu-title">Loan Management</div>
 
@@ -248,39 +124,60 @@
         </a>
 
         <div class="submenu">
+            @can('loan.view')
+
             <a href="{{route('loan.index')}}">
                 <i class="bx bx-file"></i>
+
                 Loan List
             </a>
 
+            @endcan @can('loan_product.view')
+
             <a href="{{route('loan-product.index')}}">
                 <i class="bx bx-package"></i>
+
                 Loan Product
             </a>
 
+            @endcan @can('loan.collection')
+
             <a href="{{route('installment.index')}}">
                 <i class="bx bx-money"></i>
+
                 Installment
             </a>
 
+            @endcan @can('loan.payment.history')
+
             <a href="{{route('loan.payment.index')}}">
                 <i class="bx bx-history"></i>
+
                 Payment History
             </a>
 
+            @endcan @can('report.daily')
+
             <a href="{{route('report.daily.collection')}}">
                 <i class="bx bx-bar-chart"></i>
+
                 Daily Collection
             </a>
 
+            @endcan @can('loan.overdue')
+
             <a href="{{route('installment.overdue')}}">
                 <i class="bx bx-error"></i>
+
                 Overdue
             </a>
+
+            @endcan
         </div>
     </div>
 
-    <!-- SAVINGS -->
+    @endcanany {{-- SAVINGS MANAGEMENT --}} @canany([ 'saving.view', 'saving.deposit', 'saving.withdraw',
+    'saving.summary' ])
 
     <div class="menu-title">Savings Management</div>
 
@@ -294,29 +191,44 @@
         </a>
 
         <div class="submenu">
+            @can('saving.view')
+
             <a href="{{route('savvings.index')}}">
                 <i class="bx bx-wallet-alt"></i>
+
                 Savings
             </a>
 
+            @endcan @can('saving.summary')
+
             <a href="{{route('savvings.summary')}}">
                 <i class="bx bx-pie-chart"></i>
+
                 Summary
             </a>
 
+            @endcan @can('saving.view')
+
             <a href="{{route('savvings.member.summary')}}">
                 <i class="bx bx-user-circle"></i>
+
                 Member Summary
             </a>
 
+            @endcan @can('saving.withdraw')
+
             <a href="{{route('savvings.withdraw.withreqs')}}">
                 <i class="bx bx-money-withdraw"></i>
+
                 Withdraw
             </a>
+
+            @endcan
         </div>
     </div>
 
-    <!-- DPS -->
+    @endcanany {{-- DPS MANAGEMENT --}} @canany([ 'dps.plan', 'dps.account', 'dps.collection', 'dps.maturity',
+    'dps.report' ])
 
     <div class="menu-title">DPS Management</div>
 
@@ -330,33 +242,51 @@
         </a>
 
         <div class="submenu">
+            @can('dps.plan')
+
             <a href="{{route('dps-plans.index')}}">
                 <i class="bx bx-list-ul"></i>
+
                 DPS Plans
             </a>
 
+            @endcan @can('dps.account')
+
             <a href="{{route('dps-accounts.index')}}">
                 <i class="bx bx-user-plus"></i>
+
                 DPS Accounts
             </a>
 
+            @endcan @can('dps.collection')
+
             <a href="{{route('dps-payments.index')}}">
                 <i class="bx bx-collection"></i>
+
                 DPS Collection
             </a>
 
+            @endcan @can('dps.maturity')
+
             <a href="{{route('dps-maturities.index')}}">
                 <i class="bx bx-check-circle"></i>
+
                 DPS Maturity
             </a>
 
+            @endcan @can('dps.report')
+
             <a href="{{route('dps-reports.index')}}">
                 <i class="bx bx-line-chart"></i>
+
                 DPS Reports
             </a>
+
+            @endcan
         </div>
     </div>
-    <!-- Account -->
+
+    @endcanany {{-- ACCOUNT / FUND MANAGEMENT --}} @canany([ 'fund.account', 'fund.transaction', 'fund.ledger' ])
 
     <div class="menu-title">Account Management</div>
 
@@ -370,20 +300,35 @@
         </a>
 
         <div class="submenu">
+            @can('fund.ledger')
+
             <a href="{{route('fund.ledger1')}}">
                 <i class="bx bx-book-content"></i>
-                Fund ledger
+
+                Fund Ledger
             </a>
+
+            @endcan @can('fund.account')
 
             <a href="{{route('fund-accounts.index')}}">
                 <i class="bx bx-briefcase"></i>
-               Fund Account
+
+                Fund Account
             </a>
 
-            
- 
+            @endcan @can('fund.transaction')
+
+            <a href="{{route('fund-transactions.index')}}">
+                <i class="bx bx-transfer"></i>
+
+                Fund Transaction
+            </a>
+
+            @endcan
         </div>
     </div>
+
+    @endcanany
 </div>
 
 <div class="sidebar-overlay" id="sidebarOverlay"></div>
@@ -414,11 +359,13 @@
             };
         }
 
-        overlay.onclick = function () {
-            sidebar.classList.remove("active");
+        if (overlay) {
+            overlay.onclick = function () {
+                sidebar.classList.remove("active");
 
-            overlay.classList.remove("active");
-        };
+                overlay.classList.remove("active");
+            };
+        }
 
         document.querySelectorAll(".menu-toggle").forEach(function (menu) {
             menu.onclick = function () {

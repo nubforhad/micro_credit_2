@@ -9,35 +9,30 @@ use Spatie\Permission\PermissionRegistrar;
 
 class RolePermissionSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
+
 
         $permissions = [
 
             // Dashboard
             'dashboard.view',
 
-            // User
+
+            // User Management
             'user.view',
             'user.create',
             'user.edit',
             'user.delete',
 
-            // Role
+
+            // Role Permission
             'role.view',
             'role.create',
             'role.edit',
             'role.delete',
 
-            // Permission
-            'permission.view',
-            'permission.create',
-            'permission.edit',
-            'permission.delete',
 
             // Company
             'company.view',
@@ -45,23 +40,35 @@ class RolePermissionSeeder extends Seeder
             'company.edit',
             'company.delete',
 
+
             // Branch
             'branch.view',
             'branch.create',
             'branch.edit',
             'branch.delete',
 
+
+            // Area
+            'area.view',
+            'area.create',
+            'area.edit',
+            'area.delete',
+
+
+            // Center
+            'center.view',
+            'center.create',
+            'center.edit',
+            'center.delete',
+
+
             // Member
             'member.view',
             'member.create',
             'member.edit',
             'member.delete',
+            'member.ledger',
 
-            // Loan Product
-            'loan_product.view',
-            'loan_product.create',
-            'loan_product.edit',
-            'loan_product.delete',
 
             // Loan
             'loan.view',
@@ -69,62 +76,263 @@ class RolePermissionSeeder extends Seeder
             'loan.edit',
             'loan.delete',
             'loan.approve',
-            'loan.disburse',
+            'loan.close',
+            'loan.collection',
+            'loan.payment.history',
+            'loan.overdue',
+            'loan.report',
 
-            // Installment
-            'installment.view',
-            'installment.collect',
 
             // Savings
             'saving.view',
-            'saving.create',
             'saving.deposit',
+            'saving.edit',
+            'saving.delete',
             'saving.withdraw',
+            'saving.withdraw.approve',
+            'saving.withdraw.reject',
+            'saving.ledger',
+            'saving.summary',
+
+
+            // DPS
+            'dps.plan',
+            'dps.account',
+            'dps.collection',
+            'dps.maturity',
+            'dps.report',
+            'dps.receipt',
+            'dps.due',
+
+
+            // Fund
+            'fund.account',
+            'fund.transaction',
+            'fund.ledger',
+
+
+            // Income Expense
+            'income.view',
+            'income.create',
+            'income.edit',
+            'income.delete',
+
+
+            // Cash Book
+            'cashbook.view',
+
 
             // Reports
-            'report.view',
+            'report.dashboard',
+            'report.daily',
 
-            // Settings
-            'setting.view',
-            'setting.edit',
 
         ];
 
+
         foreach ($permissions as $permission) {
+
             Permission::firstOrCreate([
                 'name' => $permission,
                 'guard_name' => 'web'
             ]);
+
         }
 
-        $superAdmin = Role::firstOrCreate([
-            'name' => 'Super Admin',
-            'guard_name' => 'web'
-        ]);
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Roles
+        |--------------------------------------------------------------------------
+        */
+
 
         $admin = Role::firstOrCreate([
             'name' => 'Admin',
             'guard_name' => 'web'
         ]);
 
-        $manager = Role::firstOrCreate([
-            'name' => 'Manager',
+
+        $branchManager = Role::firstOrCreate([
+            'name' => 'Branch Manager',
             'guard_name' => 'web'
         ]);
+
+
+        $accountant = Role::firstOrCreate([
+            'name' => 'Accountant',
+            'guard_name' => 'web'
+        ]);
+
 
         $collector = Role::firstOrCreate([
             'name' => 'Collector',
             'guard_name' => 'web'
         ]);
 
-        $superAdmin->syncPermissions(Permission::all());
 
-        $admin->syncPermissions([
-            'dashboard.view',
-            'member.view',
-            'loan.view',
-            'saving.view',
-            'report.view'
+        $auditor = Role::firstOrCreate([
+            'name' => 'Auditor',
+            'guard_name' => 'web'
         ]);
+
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Admin All Permission
+        |--------------------------------------------------------------------------
+        */
+
+        $admin->syncPermissions(
+            Permission::all()
+        );
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Branch Manager
+        |--------------------------------------------------------------------------
+        */
+
+        $branchManager->syncPermissions([
+
+            'dashboard.view',
+
+            'member.view',
+            'member.create',
+            'member.edit',
+            'member.ledger',
+
+            'loan.view',
+            'loan.create',
+            'loan.approve',
+            'loan.collection',
+            'loan.close',
+
+            'saving.view',
+            'saving.deposit',
+            'saving.withdraw',
+
+            'dps.account',
+            'dps.collection',
+
+            'report.dashboard'
+
+        ]);
+
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Accountant
+        |--------------------------------------------------------------------------
+        */
+
+        $accountant->syncPermissions([
+
+            'dashboard.view',
+
+            'loan.view',
+            'loan.payment.history',
+            'loan.report',
+
+            'saving.view',
+            'saving.deposit',
+            'saving.withdraw.approve',
+            'saving.ledger',
+
+            'dps.plan',
+            'dps.account',
+            'dps.maturity',
+            'dps.report',
+
+            'fund.account',
+            'fund.transaction',
+            'fund.ledger',
+
+            'income.view',
+            'income.create',
+            'income.edit',
+
+            'cashbook.view',
+
+            'report.dashboard',
+            'report.daily'
+
+        ]);
+
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Collector
+        |--------------------------------------------------------------------------
+        */
+
+        $collector->syncPermissions([
+
+            'dashboard.view',
+
+            'member.view',
+
+            'loan.view',
+            'loan.collection',
+
+            'saving.view',
+            'saving.deposit',
+
+            'dps.collection',
+
+        ]);
+
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Auditor
+        |--------------------------------------------------------------------------
+        */
+
+        $auditor->syncPermissions([
+
+            'dashboard.view',
+
+            'company.view',
+            'branch.view',
+
+            'member.view',
+            'member.ledger',
+
+            'loan.view',
+            'loan.report',
+            'loan.payment.history',
+
+            'saving.view',
+            'saving.summary',
+            'saving.ledger',
+
+            'dps.report',
+
+            'fund.ledger',
+
+            'income.view',
+
+            'cashbook.view',
+
+            'report.dashboard',
+            'report.daily'
+
+        ]);
+
+
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
+
     }
 }

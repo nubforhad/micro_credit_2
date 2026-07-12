@@ -66,12 +66,18 @@
     }
 </style>
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-        <h3 class="fw-bold">Micro Credit Dashboard</h3>
+<div>
+    <h3 class="fw-bold">
+        Micro Credit Dashboard
+    </h3>
+    <p class="text-muted mb-0">
+        Welcome back, 
+        <strong>
+            {{ auth()->user()->name }}
+        </strong>
 
-        <p class="text-muted mb-0">Welcome back, Admin</p>
-    </div>
+        (   {{ auth()->user()->getRoleNames()->first() ?? 'User' }}  )
+    </p>
 </div>
 
 <!-- STAT CARDS -->

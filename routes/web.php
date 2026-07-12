@@ -26,7 +26,25 @@ use App\Http\Controllers\FundTransactionController;
 use App\Http\Controllers\IncomeExpenseController;
 use App\Http\Controllers\CashBookController;
 use App\Http\Controllers\DailyCollectionController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\UserController;
 
+use App\Http\Controllers\RoleController;
+
+
+Route::get('/test-permission', function(){
+
+    return "Permission Working";
+
+})->middleware('permission:dashboard.view');
+
+Route::middleware(['auth','role:Super Admin'])->group(function(){
+
+    Route::resource('roles',RoleController::class);
+
+    Route::resource('users',UserController::class);
+
+});
 
 
 Route::get('/', function () {
@@ -42,8 +60,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-     Route::get('/dashboard', [DashboardController::class,'index'])
-        ->name('dashboard');
+     Route::get('/dashboard', [DashboardController::class,'index'])->name('dashboard');
 
     // company 
     Route::resource('company', CompanyController::class);
@@ -127,7 +144,9 @@ Route::get( 'cash-book', [CashBookController::class,'index'])->name('cash-book.i
 
 
 // daily collection route
-Route::get( 'daily-collection', [DailyCollectionController::class,'index'])->name('daily-collection.index');
+    Route::get( 'daily-collection', [DailyCollectionController::class,'index'])->name('daily-collection.index');
+
+    Route::get( 'reports/dashboard', [ReportController::class,'dashboard'])->name('reports.dashboard');
 
 Route::get('dps-receipt/{id}', [DpsReceiptController::class,'show'])->name('dps-receipt.show');
 Route::get( 'dps-due', [DpsDueController::class,'index'])->name('dps-due.index');});
