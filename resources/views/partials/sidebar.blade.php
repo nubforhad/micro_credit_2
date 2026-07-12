@@ -224,6 +224,16 @@
         Income Expenses
     </a>
 
+    <a href="{{route('cash-book.index')}}">
+        <i class="bx bx-money"></i>
+       Cash Book
+    </a>
+
+    <a href="{{route('daily-collection.index')}}">
+        <i class="bx bx-money"></i>
+       Daily Collection 
+    </a>
+
     <!-- LOAN -->
 
     <div class="menu-title">Loan Management</div>

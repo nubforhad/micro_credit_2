@@ -24,6 +24,9 @@ use App\Http\Controllers\DpsReceiptController;
 use App\Http\Controllers\FundAccountController;
 use App\Http\Controllers\FundTransactionController;
 use App\Http\Controllers\IncomeExpenseController;
+use App\Http\Controllers\CashBookController;
+use App\Http\Controllers\DailyCollectionController;
+
 
 
 Route::get('/', function () {
@@ -117,6 +120,14 @@ Route::middleware('auth')->group(function () {
  // income expanse route
 Route::resource( 'income-expenses', IncomeExpenseController::class);
 
+
+// cash book route
+Route::get( 'cash-book', [CashBookController::class,'index'])->name('cash-book.index');
+
+
+
+// daily collection route
+Route::get( 'daily-collection', [DailyCollectionController::class,'index'])->name('daily-collection.index');
 
 Route::get('dps-receipt/{id}', [DpsReceiptController::class,'show'])->name('dps-receipt.show');
 Route::get( 'dps-due', [DpsDueController::class,'index'])->name('dps-due.index');});
