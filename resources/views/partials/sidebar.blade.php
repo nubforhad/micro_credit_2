@@ -209,13 +209,19 @@
     </a>
 
     <a href="{{route('center.index')}}">
-        <i class="bx bx-home"></i>
+        <i class="bx bx-sitemap"></i>
         Center
     </a>
 
     <a href="{{route('member.index')}}">
         <i class="bx bx-group"></i>
         Members
+    </a>
+
+
+    <a href="{{route('income-expenses.index')}}">
+        <i class="bx bx-transfer-alt"></i>
+        Income Expenses
     </a>
 
     <!-- LOAN -->
@@ -346,7 +352,7 @@
 
     <div class="menu-group">
         <a class="menu-toggle">
-            <i class="bx bx-calendar"></i>
+            <i class="bx bx-wallet"></i>
 
             Account
 
@@ -354,15 +360,17 @@
         </a>
 
         <div class="submenu">
-            <a href="{{route('fund.ledger')}}">
-                <i class="bx bx-list-ul"></i>
+            <a href="{{route('fund.ledger1')}}">
+                <i class="bx bx-book-content"></i>
                 Fund ledger
             </a>
 
             <a href="{{route('fund-accounts.index')}}">
-                <i class="bx bx-user-plus"></i>
+                <i class="bx bx-briefcase"></i>
                Fund Account
             </a>
+
+            
  
         </div>
     </div>

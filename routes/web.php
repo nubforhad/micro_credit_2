@@ -23,7 +23,7 @@ use App\Http\Controllers\DpsDueController;
 use App\Http\Controllers\DpsReceiptController;
 use App\Http\Controllers\FundAccountController;
 use App\Http\Controllers\FundTransactionController;
-
+use App\Http\Controllers\IncomeExpenseController;
 
 
 Route::get('/', function () {
@@ -106,10 +106,17 @@ Route::middleware('auth')->group(function () {
     Route::get( 'dps-reports',  [DpsReportController::class,'index'])->name('dps-reports.index');
 
 
-
-Route::resource('fund-accounts', FundAccountController::class);
-    Route::get('fund-ledger', [FundTransactionController::class,'index'])->name('fund.ledger');
+    // Acount Fund 
+    Route::resource('fund-accounts', FundAccountController::class);
+    Route::get('fund-ledgers', [FundTransactionController::class,'index'])->name('fund.ledger1');
     Route::resource( 'fund-transactions', FundTransactionController::class);
+
+    Route::get('/fund-ledger', [FundTransactionController::class, 'ledger'])->name('ledgers.account');
+
+
+ // income expanse route
+Route::resource( 'income-expenses', IncomeExpenseController::class);
+
 
 Route::get('dps-receipt/{id}', [DpsReceiptController::class,'show'])->name('dps-receipt.show');
 Route::get( 'dps-due', [DpsDueController::class,'index'])->name('dps-due.index');});

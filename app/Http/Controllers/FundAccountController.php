@@ -52,22 +52,34 @@ class FundAccountController extends Controller
         return view('fund_accounts.edit', compact('fundAccount'));
     }
 
-    public function update(Request $request, FundAccount $fundAccount)
+ public function update(Request $request, FundAccount $fundAccount)
     {
         $request->validate([
             'name' => 'required|string|max:255',
             'type' => 'required',
+            'opening_balance' => 'required|numeric|min:0',
+            'current_balance' => 'required|numeric|min:0',
         ]);
+
+        // Only one default account
+        if ($request->has('is_default')) {
+            FundAccount::where('id', '!=', $fundAccount->id)
+                ->update(['is_default' => false]);
+        }
+
         $fundAccount->update([
-            'name'=>$request->name,
-            'type'=>$request->type,
-            'status'=>$request->status ?? true,
-            'remarks'=>$request->remarks,
+            'name' => $request->name,
+            'type' => $request->type,
+            'opening_balance' => $request->opening_balance,
+            'current_balance' => $request->current_balance,
+            'is_default' => $request->has('is_default'),
+            'status' => $request->has('status'),
+            'remarks' => $request->remarks,
         ]);
+
         return redirect()
             ->route('fund-accounts.index')
-            ->with('success','Fund Account Updated Successfully');
-
+            ->with('success', 'Fund Account updated successfully.');
     }
 
     public function destroy(FundAccount $fundAccount)

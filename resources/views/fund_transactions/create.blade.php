@@ -3,7 +3,7 @@
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h4>Add Fund Transaction</h4>
 
-    <a href="{{ route('fund.ledger') }}" class="btn btn-secondary"> Back </a>
+    <a href="{{ route('fund.ledger1') }}" class="btn btn-secondary"> Back </a>
 </div>
 
 <div class="card shadow-sm">
