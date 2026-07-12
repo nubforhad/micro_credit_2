@@ -8,7 +8,8 @@ use Carbon\Carbon;
 use App\Models\Loan;
 use App\Models\LoanPayment;
 use Illuminate\Support\Facades\DB;
-
+use App\Models\FundAccount;
+use App\Models\FundTransaction;
 
 class LoanInstallmentController extends Controller
 {
@@ -59,110 +60,235 @@ class LoanInstallmentController extends Controller
      * Payment Receive (MAIN LOGIC)
      */
 
-
-public function pay(Request $request, $id)
-{  
+ public function pay(Request $request, $id)
+{
     $request->validate([
+
         'paid_amount' => 'required|numeric|min:0.01',
         'payment_method' => 'nullable|string',
+
     ]);
+
 
     DB::beginTransaction();
 
+
     try {
 
-        $installment = LoanInstallment::with('loan')->findOrFail($id);
+
+        $installment = LoanInstallment::with('loan')
+            ->findOrFail($id);
+
+
 
         $payAmount = $request->paid_amount;
 
-        // Remaining amount
-        $remaining = $installment->amount - $installment->paid_amount;
 
-        if ($payAmount > $remaining) {
-            return back()->with('error', 'Payment amount cannot be greater than remaining amount.');
-        }
 
         /*
-        |------------------------------------------
-        | Update Installment
-        |------------------------------------------
+        |--------------------------------------------------------------------------
+        | Check Remaining Amount
+        |--------------------------------------------------------------------------
         */
+
+
+        $remaining = $installment->amount - $installment->paid_amount;
+
+
+        if($payAmount > $remaining){
+
+
+            return back()->with(
+                'error',
+                'Payment amount cannot be greater than remaining amount.'
+            );
+
+
+        } 
+        /*
+        |--------------------------------------------------------------------------
+        | Update Loan Installment
+        |--------------------------------------------------------------------------
+        */
+
 
         $installment->paid_amount += $payAmount;
 
         $installment->payment_date = Carbon::now();
 
-        if ($installment->paid_amount >= $installment->amount) {
+
+
+        if($installment->paid_amount >= $installment->amount){
+
 
             $installment->paid_amount = $installment->amount;
+
             $installment->status = 'paid';
 
-        } elseif ($installment->paid_amount > 0) {
+
+
+        }elseif($installment->paid_amount > 0){
+
 
             $installment->status = 'partial';
 
-        } else {
+
+
+        }else{
+
 
             $installment->status = 'unpaid';
 
+
         }
 
-        $installment->save();
 
+
+        $installment->save(); 
         /*
-        |------------------------------------------
-        | Save Payment History
-        |------------------------------------------
+        |--------------------------------------------------------------------------
+        | Loan Payment History
+        |--------------------------------------------------------------------------
         */
- 
+
+
         LoanPayment::create([
+
 
             'loan_id' => $installment->loan_id,
 
+
             'loan_installment_id' => $installment->id,
+
 
             'member_id' => $installment->loan->member_id,
 
+
             'receipt_no' => 'RC-' . now()->format('YmdHis') . rand(100,999),
+
 
             'payment_date' => now(),
 
+
             'amount' => $payAmount,
+
 
             'payment_method' => $request->payment_method ?? 'Cash',
 
+
             'received_by' => auth()->id(),
 
-        ]);
 
+
+        ]); 
         /*
-        |------------------------------------------
-        | Auto Close Loan
-        |------------------------------------------
+        |--------------------------------------------------------------------------
+        | Fund Account Update
+        |--------------------------------------------------------------------------
         */
 
-        $loan = Loan::with('installments')->find($installment->loan_id);
 
-        if (
+        $fundAccount = FundAccount::where('is_default', true)
+            ->where('status', true)
+            ->first();
+
+
+
+        if(!$fundAccount){
+
+
+            throw new \Exception(
+                'Default Fund Account not found.'
+            );
+
+
+        } 
+        // New Fund Balance
+
+        $newBalance = $fundAccount->current_balance + $payAmount;
+
+
+
+        // Update Fund Account
+
+        $fundAccount->current_balance = $newBalance;
+
+        $fundAccount->save(); 
+        /*
+        |--------------------------------------------------------------------------
+        | Fund Transaction Entry
+        |--------------------------------------------------------------------------
+        */
+
+
+        FundTransaction::create([
+
+
+
+            'fund_account_id' => $fundAccount->id,
+
+
+            'transaction_date' => now(),
+
+
+            'type' => 'loan_collection',
+
+
+            'dr_cr' => 'credit',
+
+
+            'amount' => $payAmount,
+
+
+            'balance_after' => $newBalance,
+
+
+            'reference_type' => 'LoanPayment',
+
+
+            'reference_id' => $installment->id,
+
+
+            'remarks' => 'Loan installment collection',
+
+
+            'created_by' => auth()->id(),
+
+
+
+        ]); 
+        /*
+        |--------------------------------------------------------------------------
+        | Auto Close Loan
+        |--------------------------------------------------------------------------
+        */ 
+
+        $loan = Loan::with('installments')
+            ->find($installment->loan_id);
+ 
+        if(
             $loan->installments()
-                ->where('status', '!=', 'paid')
-                ->count() == 0
-        ) {
+            ->where('status','!=','paid')
+            ->count() == 0
+        ){ 
+            $loan->status = 'closed'; 
+            $loan->save(); 
+        } 
+        DB::commit(); 
+        return back()->with(
+            'success',
+            'Payment received successfully.'
+        ); 
+    } catch(\Exception $e){ 
+        DB::rollBack(); 
+        return back()->with(
+            'error',
+            $e->getMessage()
+        );
 
-            $loan->status = 'closed';
-            $loan->save();
-        }
 
-        DB::commit();
-
-        return back()->with('success', 'Payment received successfully.');
-
-    } catch (\Exception $e) {
-
-        DB::rollBack();
-
-        return back()->with('error', $e->getMessage());
     }
+
 }
 
     /**

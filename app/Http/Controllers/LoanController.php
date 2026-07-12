@@ -8,6 +8,8 @@ use App\Models\LoanProduct;
 use App\Models\LoanInstallment;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use App\Models\FundAccount;
+use App\Models\FundTransaction;
 
 class LoanController extends Controller
 {
@@ -42,7 +44,6 @@ class LoanController extends Controller
 
         // Flat Interest
         $interest = ($request->amount * $product->interest_rate * $product->duration) / 100;
-
         $totalPayable =
             $request->amount +
             $interest +
@@ -139,9 +140,16 @@ class LoanController extends Controller
     public function approve($id)
     {
         $loan = Loan::with('loanProduct')->findOrFail($id);
-
         if ($loan->status != 'pending') {
             return back()->with('error', 'Loan already processed.');
+        }
+        $fund = FundAccount::where('is_default', true)->first();
+        if (!$fund) {
+            return back()->with('error', 'Default Fund Account not found.');
+        }
+
+        if ($fund->current_balance < $loan->amount) {
+            return back()->with('error', 'Insufficient fund balance.');
         }
 
         $loan->status = 'running';
@@ -151,6 +159,26 @@ class LoanController extends Controller
         }
 
         $loan->save();
+
+        // Update Fund
+        $newBalance = $fund->current_balance - $loan->amount;
+
+        FundTransaction::create([
+            'fund_account_id' => $fund->id,
+            'transaction_date' => now()->toDateString(),
+            'type' => 'loan_disbursement',
+            'dr_cr' => 'debit',
+            'amount' => $loan->amount,
+            'balance_after' => $newBalance,
+            'reference_type' => Loan::class,
+            'reference_id' => $loan->id,
+            'remarks' => 'Loan Disbursement - ' . $loan->loan_no,
+            'created_by' => auth()->id(),
+        ]);
+
+        $fund->update([
+            'current_balance' => $newBalance,
+        ]);
 
         $duration = $loan->loanProduct->duration;
 
@@ -164,7 +192,6 @@ class LoanController extends Controller
             $dueDate = Carbon::parse($loan->start_date);
 
             switch ($loan->loanProduct->installment_type) {
-
                 case 'daily':
                     $dueDate->addDays($i);
                     break;
@@ -179,16 +206,16 @@ class LoanController extends Controller
             }
 
             LoanInstallment::create([
-                'loan_id'        => $loan->id,
+                'loan_id' => $loan->id,
                 'installment_no' => $i,
-                'due_date'       => $dueDate,
-                'amount'         => $installmentAmount,
+                'due_date' => $dueDate,
+                'amount' => $installmentAmount,
             ]);
         }
 
         return back()->with(
             'success',
-            'Loan Approved & Installments Generated Successfully.'
+            'Loan Approved, Fund Updated & Installments Generated Successfully.'
         );
     }
 

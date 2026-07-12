@@ -44,8 +44,7 @@ class FundTransaction extends Model
         'balance_after' => 'decimal:2',
 
     ];
-
-
+ 
 
     /**
      * Fund Account Relation

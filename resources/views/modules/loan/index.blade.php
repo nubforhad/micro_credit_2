@@ -14,17 +14,22 @@
 <script>
     Swal.fire({
         icon: "success",
-
         title: "Success",
-
         text: "{{session('success')}}",
-
         timer: 2000,
-
         showConfirmButton: false,
     });
 </script>
 
+@endif
+@if(session('error'))
+<script>
+Swal.fire({
+    icon: "error",
+    title: "Error",
+    text: "{{ session('error') }}"
+});
+</script>
 @endif
 
 <div class="card shadow-sm border-0">
@@ -135,53 +140,59 @@
 </div>
 
 <script>
-    document.querySelectorAll(".approveForm").forEach((form) => {
-        form.addEventListener("submit", function (e) {
+    document.addEventListener('DOMContentLoaded', function () {
+
+    document.querySelectorAll(".approveForm").forEach(function(form){
+
+        form.addEventListener("submit", function(e){
+
             e.preventDefault();
 
             Swal.fire({
                 title: "Approve Loan?",
-
                 text: "Installments will be generated automatically.",
-
                 icon: "question",
-
                 showCancelButton: true,
-
                 confirmButtonColor: "#198754",
-
                 confirmButtonText: "Yes Approve",
-            }).then((result) => {
-                if (result.isConfirmed) {
+            }).then((result)=>{
+
+                if(result.isConfirmed){
                     form.submit();
                 }
+
             });
+
         });
+
     });
 
-    document.querySelectorAll(".deleteForm").forEach((form) => {
-        form.addEventListener("submit", function (e) {
+    document.querySelectorAll(".deleteForm").forEach(function(form){
+
+        form.addEventListener("submit", function(e){
+
             e.preventDefault();
 
             Swal.fire({
                 title: "Delete Loan?",
-
                 text: "This action cannot be undone.",
-
                 icon: "warning",
-
                 showCancelButton: true,
-
                 confirmButtonColor: "#dc3545",
-
                 confirmButtonText: "Delete",
-            }).then((result) => {
-                if (result.isConfirmed) {
+            }).then((result)=>{
+
+                if(result.isConfirmed){
                     form.submit();
                 }
+
             });
+
         });
+
     });
+
+});
 </script>
 
 @endsection

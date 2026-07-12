@@ -6,15 +6,13 @@ use App\Models\Savvings;
 use App\Models\Member;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use App\Models\FundAccount;
+use App\Models\FundTransaction;
+use Illuminate\Support\Facades\DB;
 
 
 class SavvingsController extends Controller
-{
-
-
-    /**
-     * Savvings List
-     */
+{ 
     public function index(Request $request)
     {
 
@@ -47,11 +45,7 @@ class SavvingsController extends Controller
         return view( 'modules.savvings.index',  compact('savvings', 'totalApprovedDeposit'));
 
     }
-
-
-
-
-
+ 
     /**
      * Create Form
      */
@@ -66,85 +60,228 @@ class SavvingsController extends Controller
 
     }
   
-  public function store(Request $request)
+   public function store(Request $request)
 {
+
     $request->validate([
-        'member_id'       => 'required',
-        'type'            => 'required',
-        'amount'          => 'required|numeric|min:1',
-        'payment_method'  => 'required',
-        'date'            => 'required|date'
+
+        'member_id'     => 'required',
+        'type'          => 'required',
+        'amount'        => 'required|numeric|min:1',
+        'payment_method' => 'required',
+        'date'          => 'required|date'
+
     ]);
 
 
-    // Withdraw Balance Check
-    if($request->type == 'withdraw')
-    {
 
-        $deposit = Savvings::where('member_id',$request->member_id)
-            ->where('type','deposit')
-            ->where('status','approved')
-            ->sum('amount');
+    DB::beginTransaction();
 
 
-        $withdraw = Savvings::where('member_id',$request->member_id)
-            ->where('type','withdraw')
-            ->where('status','approved')
-            ->sum('amount');
+    try {
 
 
-        $balance = $deposit - $withdraw;
 
+        /*
+        |--------------------------------------------------------------------------
+        | Withdraw Balance Check
+        |--------------------------------------------------------------------------
+        */
 
-        if($request->amount > $balance)
+        if($request->type == 'withdraw')
         {
 
-            return back()
-                ->withInput()
-                ->with(
-                    'error',
-                    'Insufficient balance. Current balance is ৳ '.number_format($balance,2)
+
+            $deposit = Savvings::where('member_id',$request->member_id)
+                ->where('type','deposit')
+                ->sum('amount');
+
+
+
+            $withdraw = Savvings::where('member_id',$request->member_id)
+                ->where('type','withdraw')
+                ->where('status','approved')
+                ->sum('amount');
+
+
+
+            $balance = $deposit - $withdraw;
+
+
+
+            if($request->amount > $balance)
+            {
+
+                return back()
+                    ->withInput()
+                    ->with(
+                        'error',
+                        'Insufficient balance. Current balance is ৳ '.number_format($balance,2)
+                    );
+
+            }
+
+
+        }
+ 
+
+        /*
+        |--------------------------------------------------------------------------
+        | Deposit Direct Approved
+        | Withdraw Pending
+        |--------------------------------------------------------------------------
+        */
+
+
+        $status = $request->type == 'withdraw'
+            ? 'pending'
+            : 'approved';
+ 
+        /*
+        |--------------------------------------------------------------------------
+        | Create Savings Transaction
+        |--------------------------------------------------------------------------
+        */
+
+
+        $savving = Savvings::create([
+
+
+            'member_id'      => $request->member_id,
+
+            'receipt_no'     => $this->generateReceipt(),
+
+            'type'           => $request->type,
+
+            'status'         => $status,
+
+            'amount'         => $request->amount,
+
+            'payment_method' => $request->payment_method,
+
+            'date'           => $request->date,
+
+            'note'           => $request->note,
+
+            'created_by'     => auth()->id(),
+
+
+        ]); 
+        /*
+        |--------------------------------------------------------------------------
+        | Deposit Fund Integration
+        |--------------------------------------------------------------------------
+        */
+
+
+        if($request->type == 'deposit')
+        { 
+            $fundAccount = FundAccount::where('is_default',true)
+                ->where('status',true)
+                ->first();
+
+
+
+            if(!$fundAccount)
+            {
+
+                throw new \Exception(
+                    'Default Fund Account not found.'
                 );
+
+            }
+ 
+
+            // Increase Fund Balance
+
+            $newBalance = 
+                $fundAccount->current_balance + $request->amount;
+
+
+
+            $fundAccount->current_balance = $newBalance;
+
+            $fundAccount->save();
+ 
+            /*
+            |--------------------------------------------------------------------------
+            | Fund Transaction
+            |--------------------------------------------------------------------------
+            */
+
+
+            FundTransaction::create([
+
+
+                'fund_account_id' => $fundAccount->id,
+
+
+                'transaction_date' => $request->date,
+
+
+                'type' => 'saving_deposit',
+
+
+                'dr_cr' => 'credit',
+
+
+                'amount' => $request->amount,
+
+
+                'balance_after' => $newBalance,
+
+
+                'reference_type' => 'Savvings',
+
+
+                'reference_id' => $savving->id,
+
+
+                'remarks' => 'Member savings deposit',
+
+
+                'created_by' => auth()->id(),
+
+
+            ]);
+
 
         }
 
+
+
+
+        DB::commit();
+
+
+
+        return redirect()
+
+            ->route('savvings.index')
+
+            ->with(
+                'success',
+                'Savvings created successfully'
+            );
+ 
+    } catch(\Exception $e)
+    {
+
+
+        DB::rollBack();
+
+
+        return back()
+            ->withInput()
+            ->with(
+                'error',
+                $e->getMessage()
+            );
+
+
     }
 
-
-
-    // Status based on type
-    $status = $request->type == 'withdraw'
-        ? 'pending'
-        : 'approved';
-
-
-
-    Savvings::create([
-
-        'member_id'      => $request->member_id,
-        'receipt_no'     => $this->generateReceipt(),
-        'type'           => $request->type,
-        'status'         => $status,
-        'amount'         => $request->amount,
-        'payment_method' => $request->payment_method,
-        'date'           => $request->date,
-        'note'           => $request->note,
-        'created_by'     => auth()->id(),
-
-    ]);
-
-
-    return redirect()
-        ->route('savvings.index')
-        ->with(
-            'success',
-            'Savvings created successfully'
-        );
 }
-
-
-
-
     /**
      * Show
      */
@@ -179,11 +316,7 @@ class SavvingsController extends Controller
         );
 
     }
-
-
-
-
-
+ 
     /**
      * Update
      */
@@ -419,25 +552,210 @@ class SavvingsController extends Controller
         return view('modules.savvings.withdrawRequest',  compact('requests'));
 
     }
+ 
     public function withdrawApprove($id)
-    {
+{
+
+    DB::beginTransaction();
+
+
+    try {
+
+
         $savving = Savvings::findOrFail($id);
+
+
+
         if($savving->status != 'pending')
         {
-            return back()->with('error','Already processed');
+
+            return back()
+                ->with(
+                    'error',
+                    'Already processed'
+                );
 
         }
 
-        $savving->update(['status'=>'approved','approved_date'=>now(), 'approved_by'=>auth()->id()]);
+
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Fund Account Check
+        |--------------------------------------------------------------------------
+        */
+
+
+        $fundAccount = FundAccount::where('is_default',true)
+            ->where('status',true)
+            ->first();
+
+
+
+        if(!$fundAccount)
+        {
+
+            throw new \Exception(
+                'Default Fund Account not found.'
+            );
+
+        }
+
+
+
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Check Fund Balance
+        |--------------------------------------------------------------------------
+        */
+
+
+        if($fundAccount->current_balance < $savving->amount)
+        {
+
+            throw new \Exception(
+                'Insufficient fund balance.'
+            );
+
+        }
+
+
+
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Update Savings Withdraw
+        |--------------------------------------------------------------------------
+        */
+
+
+        $savving->update([
+
+
+            'status' => 'approved',
+
+
+            'approved_date' => now(),
+
+
+            'approved_by' => auth()->id(),
+
+
+        ]);
+
+
+
+
+
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Reduce Fund Balance
+        |--------------------------------------------------------------------------
+        */
+
+
+        $newBalance = 
+            $fundAccount->current_balance - $savving->amount;
+
+
+
+        $fundAccount->current_balance = $newBalance;
+
+
+        $fundAccount->save();
+
+
+
+
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Fund Transaction Debit Entry
+        |--------------------------------------------------------------------------
+        */
+
+
+        FundTransaction::create([
+
+
+            'fund_account_id' => $fundAccount->id,
+
+
+            'transaction_date' => now(),
+
+
+            'type' => 'saving_withdraw',
+
+
+            'dr_cr' => 'debit',
+
+
+            'amount' => $savving->amount,
+
+
+            'balance_after' => $newBalance,
+
+
+            'reference_type' => 'Savvings',
+
+
+            'reference_id' => $savving->id,
+
+
+            'remarks' => 'Member savings withdrawal',
+
+
+            'created_by' => auth()->id(),
+
+
+        ]);
+
+
+
+
+
+        DB::commit();
+
+
 
         return back()
-        ->with(
-            'success',
-            'Withdraw approved successfully'
-        );
+            ->with(
+                'success',
+                'Withdraw approved successfully'
+            );
+
+
+
+
+    } catch(\Exception $e)
+    {
+
+
+        DB::rollBack();
+
+
+        return back()
+            ->with(
+                'error',
+                $e->getMessage()
+            );
 
 
     }
+
+}
 
 
     public function withdrawReject($id)

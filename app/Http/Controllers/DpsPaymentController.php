@@ -6,12 +6,11 @@ use App\Models\DpsPayment;
 use App\Models\DpsAccount;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-
+use App\Models\FundAccount;
+use App\Models\FundTransaction;
 
 class DpsPaymentController extends Controller
-{
-
-
+{ 
     public function index()
     {
 
@@ -27,12 +26,7 @@ class DpsPaymentController extends Controller
             compact('payments')
         );
 
-    }
-
-
-
-
-
+    } 
     public function create()
     {
 
@@ -48,102 +42,212 @@ class DpsPaymentController extends Controller
         );
 
     }
-
-
-
-
-
-
-
+ 
     public function store(Request $request)
-    {
+{
+
+    $request->validate([
+
+        'dps_account_id'=>'required',
+
+        'amount'=>'required|numeric',
+
+        'payment_date'=>'required',
+
+    ]);
 
 
-        $request->validate([
 
-            'dps_account_id'=>'required',
 
-            'amount'=>'required|numeric',
+    DB::transaction(function() use($request){
 
-            'payment_date'=>'required',
+
+
+        $account = DpsAccount::findOrFail(
+            $request->dps_account_id
+        );
+
+
+
+        $installmentNo =
+            $account->paid_installment + 1;
+
+
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Create DPS Payment
+        |--------------------------------------------------------------------------
+        */
+
+
+        $payment = DpsPayment::create([
+
+
+            'dps_account_id'=>$account->id,
+
+
+            'member_id'=>$account->member_id,
+
+
+            'installment_no'=>$installmentNo,
+
+
+            'amount'=>$request->amount,
+
+
+            'payment_method'=>$request->payment_method,
+
+
+            'payment_date'=>$request->payment_date,
+
+
+            'note'=>$request->note,
+
 
         ]);
 
 
 
 
-        DB::transaction(function() use($request){
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Update DPS Account
+        |--------------------------------------------------------------------------
+        */
+
+
+        $account->increment(
+            'paid_installment'
+        );
 
 
 
-            $account = DpsAccount::findOrFail(
-                $request->dps_account_id
-            );
+
+        if(
+            $account->paid_installment >= 
+            $account->total_installment
+        )
+        {
 
 
+            $account->update([
 
-            $installmentNo =
-            $account->paid_installment + 1;
-
-
-
-            DpsPayment::create([
-
-
-                'dps_account_id'=>$account->id,
-
-
-                'member_id'=>$account->member_id,
-
-
-                'installment_no'=>$installmentNo,
-
-
-                'amount'=>$request->amount,
-
-
-                'payment_method'=>$request->payment_method,
-
-
-                'payment_date'=>$request->payment_date,
-
-
-                'note'=>$request->note,
-
+                'status'=>'completed'
 
             ]);
 
 
+        }
 
 
-            $account->increment(
-                'paid_installment'
+
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Fund Integration
+        |--------------------------------------------------------------------------
+        */
+
+
+        $fundAccount = FundAccount::where('is_default',true)
+            ->where('status',true)
+            ->first();
+
+
+
+
+        if(!$fundAccount)
+        {
+
+            throw new \Exception(
+                'Default Fund Account not found.'
             );
 
-
-
-            if(
-                $account->paid_installment >= 
-                $account->total_installment
-            )
-            {
-
-                $account->update([
-
-                    'status'=>'completed'
-
-                ]);
-
-            }
-
-
-
-        });
+        }
 
 
 
 
-        return redirect()
+        // Increase Fund Balance
+
+
+        $newBalance = 
+            $fundAccount->current_balance 
+            + $request->amount;
+
+
+
+
+        $fundAccount->current_balance = $newBalance;
+
+
+        $fundAccount->save();
+
+
+
+
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Fund Transaction Entry
+        |--------------------------------------------------------------------------
+        */
+
+
+        FundTransaction::create([
+
+
+            'fund_account_id'=>$fundAccount->id,
+
+
+            'transaction_date'=>$request->payment_date,
+
+
+            'type'=>'dps_deposit',
+
+
+            'dr_cr'=>'credit',
+
+
+            'amount'=>$request->amount,
+
+
+            'balance_after'=>$newBalance,
+
+
+            'reference_type'=>'DpsPayment',
+
+
+            'reference_id'=>$payment->id,
+
+
+            'remarks'=>'DPS installment collection',
+
+
+            'created_by'=>auth()->id(),
+
+
+        ]);
+
+
+
+
+    });
+
+
+
+
+
+    return redirect()
 
         ->route('dps-payments.index')
 
@@ -153,10 +257,6 @@ class DpsPaymentController extends Controller
         );
 
 
-    }
-
-
-
-
-
+}
+ 
 }
